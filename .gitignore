@@ -1,0 +1,59 @@
+# LocalNeta Public Repository Exclusions (.gitignore)
+# Sensitive credentials, SQL dumps, PII seed data & user uploads must NEVER be pushed.
+
+# 1. Local Environment Credentials & Secrets
+/includes/config.local.php
+/ppms/includes/config.local.php
+*.local.php
+.env
+.env.*
+*.env
+!/.env.example
+
+# 2. Database Dumps & SQL Backups (Never commit database exports)
+*.sql
+*.sql.gz
+*.sql.bz2
+*.sql.xz
+*.sql.zip
+*.sqlite
+*.sqlite3
+*.db
+*.dump
+*.bak
+/backups/
+/dumps/
+
+# 3. Sensitive Datasets, PII & Large Raw Spreadsheets/PDFs
+/includes/mlc_seed.json
+/data/
+*.xls
+*.xlsx
+*.pdf
+*.csv
+!/includes/mp_ls18.csv
+
+# 4. User-Uploaded Files & Media
+/assets/uploads/
+
+# 5. Runtime Logs, Temp Files & Caches
+*.log
+/logs/
+/tmp/
+/temp/
+/cache/
+*.tmp
+*.swp
+*.swo
+*~
+
+# 6. Dependency Managers, Verification Scripts & OS/IDE Artifacts
+/vendor/
+/node_modules/
+/verify_*.py
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+

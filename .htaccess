@@ -1,0 +1,77 @@
+<IfModule mod_rewrite.c>
+    Options -MultiViews
+    RewriteEngine On
+
+    # Block direct web access to Git metadata, CLI router, private config/data directories & sensitive extensions
+    RewriteRule ^(?:router(?:\.php)?|(?:ppms/)?includes(?:/.*)?|data(?:/.*)?|logs(?:/.*)?|backups(?:/.*)?|dumps(?:/.*)?|\.git(?:/.*)?|\.gitignore|\.gitattributes|\.env(?:\..*)?|version\.json)$ - [F,L,NC]
+    RewriteRule \.(?:sql|sql\.gz|sql\.bz2|sql\.xz|sql\.zip|sqlite|sqlite3|db|dump|bak|log|env|xls|xlsx)$ - [F,L,NC]
+
+    # External GET-only 301 redirect from *.php to extensionless URLs (index.php -> index, all pages)
+    RewriteCond %{THE_REQUEST} \s/+([^?\s]+?)\.php(?:\s|\?) [NC]
+    RewriteCond %{REQUEST_METHOD} =GET
+    RewriteRule ^ /%1 [R=301,L,QSA]
+
+    # PPMS (Political Party Management System) extensionless routes
+    RewriteRule ^ppms/?$ ppms/index.php [L,QSA]
+
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^ppms/(index|login|logout|parties|party-form|mps|mp-form|mlcs|mlc-form|villages|village-form|sitemaps|states|symbols|users|updates|change-password|logs)/?$ ppms/$1.php [L,QSA]
+
+    # Dynamic SEO XML Sitemaps (Sitemap Index + Child Sitemaps)
+    RewriteRule ^sitemap\.xml$ sitemap.php?type=index [L,QSA]
+    RewriteRule ^sitemap/?$ sitemap.php?type=index [L,QSA]
+    RewriteRule ^sitemap-(core|mps|mlcs|parties|pincodes|districts|users)(?:-([0-9]+))?\.xml$ sitemap.php?type=$1&page=$2 [L,QSA]
+
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME}.php -f
+    RewriteRule ^ppms/([A-Za-z0-9_-]+)/?$ ppms/$1.php [L,QSA]
+
+    # Single Political Party SEO profile: /political-party/<slug>
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^political-party/([^/]+)/?$ political-party.php?slug=$1 [L,QSA]
+
+    # Single Member of Parliament SEO profile: /mp/<slug>
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^mp/([^/]+)/?$ mp.php?slug=$1 [L,QSA]
+
+    # Single Member of Legislative Council SEO profile: /mlc/<prefix>-<slug>
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^mlc/([^/]+)/?$ mlc.php?slug=$1 [L,QSA]
+
+    # Single Registered Citizen / Politician SEO profile: /user/<handle>
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^user/([^/]+)/?$ user-profile.php?handle=$1 [L,QSA]
+
+    # Direct PIN Code Lookup SEO profile: /pincode/<6-digit-pin>
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^pincode/([^/]+)/?$ pincode.php?pincode=$1 [L,QSA]
+
+    # Extensionless API endpoints (supports /api/<endpoint> and /api/<endpoint>/)
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(api/(?:locations|set_location|polls|issues|search|questions|ratings|reveal-contact|pincode))/?$ $1.php [L,QSA]
+
+    # Generic fallback for any future /api/<endpoint>
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME}.php -f
+    RewriteRule ^api/([A-Za-z0-9_-]+)/?$ api/$1.php [L,QSA]
+
+    # Extensionless pages for all application routes (supports /<page> and /<page>/)
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(index|leaders|issues|elections|parties|political-party|mp|mlc|profile|pincode|source|studio|dashboard|admin|privacy-policy|disclaimer|terms-and-conditions|register|login|verify-otp|forgot-password|logout|edit-profile|user-profile)/?$ $1.php [L,QSA]
+
+    # Generic fallback for any future root <page>.php
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME}.php -f
+    RewriteRule ^([A-Za-z0-9_-]+)/?$ $1.php [L,QSA]
+</IfModule>

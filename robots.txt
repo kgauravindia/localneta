@@ -1,0 +1,16 @@
+User-agent: *
+Allow: /
+
+Disallow: /ppms/
+Disallow: /admin
+Disallow: /includes/
+Disallow: /api/
+Disallow: /studio
+Disallow: /dashboard
+Disallow: /edit-profile
+Disallow: /verify-otp
+Disallow: /forgot-password
+Disallow: /logout
+
+Sitemap: https://localneta.com/sitemap.xml
+
