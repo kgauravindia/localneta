@@ -9,7 +9,7 @@ $currentPage = basename($_SERVER['SCRIPT_NAME'] ?: ($_SERVER['PHP_SELF'] ?? 'ind
             <i class="fas fa-home"></i>
             <span>Home</span>
         </a>
-        <a href="<?= get_site_url('leaders') ?>" class="bnav-item <?= $currentPage === 'leaders' || $currentPage === 'profile' ? 'active' : '' ?>">
+        <a href="<?= get_site_url('leaders') ?>" class="bnav-item <?= in_array($currentPage, ['leaders', 'profile', 'user-profile'], true) ? 'active' : '' ?>">
             <i class="fas fa-user-tie"></i>
             <span>Leaders</span>
         </a>
@@ -17,7 +17,7 @@ $currentPage = basename($_SERVER['SCRIPT_NAME'] ?: ($_SERVER['PHP_SELF'] ?? 'ind
             <i class="fas fa-bullhorn"></i>
             <span>Issues</span>
         </a>
-        <a href="<?= get_site_url('elections') ?>" class="bnav-item <?= $currentPage === 'elections' ? 'active' : '' ?>">
+        <a href="<?= get_site_url('elections') ?>" class="bnav-item <?= in_array($currentPage, ['elections', 'mp', 'mlc'], true) ? 'active' : '' ?>">
             <i class="fas fa-vote-yea"></i>
             <span>Elections</span>
         </a>

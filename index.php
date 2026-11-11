@@ -352,55 +352,63 @@ if ($leaderCount > 0 && !in_array($selectedCategory, ['political-party-office', 
     $customLeaders = $ldrStmt->fetchAll();
 }
 
-$pageTitle = "Local Leaders Directory";
-$pageDescription = "Local Leaders Directory — Verified directory of Lok Sabha & Rajya Sabha MPs, UP/Bihar/AP Legislative Council MLCs, ECI Political Parties, and 25 Representative Categories across India.";
+$pageTitle = "India's Civic & Political Leaders Directory";
+$pageDescription = "LocalNeta — India's civic directory of Lok Sabha & Rajya Sabha MPs, Legislative Council MLCs, MLAs, Political Parties, and local representatives across 36 States & UTs.";
 require_once __DIR__ . '/includes/header.php';
 ?>
 
 <main class="main-wrapper">
 
-    <!-- Section A: Local Leaders Directory Hero Banner -->
-    <div class="tiranga-banner">
-        <div>
-            <h1><i class="fas fa-address-book" style="color:var(--saffron-main);"></i> Local Leaders Directory</h1>
-            <p>
-                Showing public records compiled from <a href="<?= get_site_url('source') ?>" style="color:#FF9933; text-decoration:underline; font-weight:700;">verified official sources</a> across India.
+    <!-- Section A: Responsive Civic Hero Section -->
+    <section class="home-hero" aria-label="LocalNeta Overview">
+        <div class="home-hero-content">
+            <span class="home-hero-badge">
+                <i class="fas fa-landmark"></i> Pan-India Civic Directory
+            </span>
+            <h1 class="home-hero-title">
+                Know Your Representatives.<br>
+                <span>Track Your Constituency.</span>
+            </h1>
+            <p class="home-hero-subtitle">
+                Explore Members of Parliament, State Legislative Council MLCs, Political Parties, and local leaders across all 36 States &amp; UTs — or locate your area by PIN code.
             </p>
+            <div class="home-hero-actions">
+                <a href="<?= get_site_url('pincode') ?>" class="btn-primary-tiranga" style="padding:10px 18px;">
+                    <i class="fas fa-map-pin"></i> Find by PIN Code
+                </a>
+                <a href="<?= get_site_url('leaders') ?>" class="btn-hero-secondary">
+                    <i class="fas fa-compass"></i> Browse Leaders
+                </a>
+            </div>
         </div>
-    </div>
 
-    <!-- Section B: Quick Database Coverage KPI Strip -->
-    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:10px; margin-bottom:18px;">
-        <a href="#mp-section" style="background:#FFFFFF; border:1px solid var(--border-color); border-top:3px solid var(--saffron-main); border-radius:var(--radius-md); padding:12px 14px; box-shadow:var(--shadow-sm); display:block; text-decoration:none;">
-            <div style="font-size:0.74rem; color:var(--text-muted); font-weight:700; text-transform:uppercase;">Lok Sabha MPs</div>
-            <div style="font-size:1.35rem; font-weight:800; color:var(--saffron-dark); margin-top:2px;"><?= number_format($globalTotals['mp_ls']) ?></div>
-            <div style="font-size:0.74rem; color:var(--text-secondary);">18th Lok Sabha (sansad.in)</div>
-        </a>
-        <a href="#mp-section" style="background:#FFFFFF; border:1px solid var(--border-color); border-top:3px solid var(--green-main); border-radius:var(--radius-md); padding:12px 14px; box-shadow:var(--shadow-sm); display:block; text-decoration:none;">
-            <div style="font-size:0.74rem; color:var(--text-muted); font-weight:700; text-transform:uppercase;">Rajya Sabha MPs</div>
-            <div style="font-size:1.35rem; font-weight:800; color:var(--green-dark); margin-top:2px;"><?= number_format($globalTotals['mp_rs']) ?></div>
-            <div style="font-size:0.74rem; color:var(--text-secondary);">Upper House &amp; Nominated</div>
-        </a>
-        <a href="<?= $globalTotals['mlcs'] > 0 ? '#mlc-section' : get_site_url('index?cat=mlc') ?>" style="background:#FFFFFF; border:1px solid var(--border-color); border-top:3px solid #E11D48; border-radius:var(--radius-md); padding:12px 14px; box-shadow:var(--shadow-sm); display:block; text-decoration:none;">
-            <div style="font-size:0.74rem; color:var(--text-muted); font-weight:700; text-transform:uppercase;">State MLCs</div>
-            <div style="font-size:1.35rem; font-weight:800; color:#BE123C; margin-top:2px;"><?= number_format($globalTotals['mlcs']) ?></div>
-            <div style="font-size:0.74rem; color:var(--text-secondary);">UP, Bihar &amp; AP Councils</div>
-        </a>
-        <a href="<?= get_site_url('parties') ?>" style="background:#FFFFFF; border:1px solid var(--border-color); border-top:3px solid #7C3AED; border-radius:var(--radius-md); padding:12px 14px; box-shadow:var(--shadow-sm); display:block; text-decoration:none;">
-            <div style="font-size:0.74rem; color:var(--text-muted); font-weight:700; text-transform:uppercase;">Political Parties (ECI)</div>
-            <div style="font-size:1.35rem; font-weight:800; color:#5B21B6; margin-top:2px;"><?= number_format($globalTotals['parties']) ?></div>
-            <div style="font-size:0.74rem; color:var(--text-secondary);">With official ECI symbols</div>
-        </a>
-        <div style="background:#FFFFFF; border:1px solid var(--border-color); border-top:3px solid #0284C7; border-radius:var(--radius-md); padding:12px 14px; box-shadow:var(--shadow-sm);">
-            <div style="font-size:0.74rem; color:var(--text-muted); font-weight:700; text-transform:uppercase;">Covered Blocks</div>
-            <div style="font-size:1.35rem; font-weight:800; color:#0369A1; margin-top:2px;"><?= number_format($globalTotals['blocks']) ?></div>
-            <div style="font-size:0.74rem; color:var(--text-secondary);">36 States &amp; 783 Districts</div>
+        <div class="home-hero-stats">
+            <a href="#mp-section" class="home-stat-tile">
+                <div class="home-stat-label">Parliament MPs</div>
+                <div class="home-stat-value" style="color:#FFB366;"><?= number_format($globalTotals['mps']) ?></div>
+                <div class="home-stat-meta"><?= number_format($globalTotals['mp_ls']) ?> LS &bull; <?= number_format($globalTotals['mp_rs']) ?> RS</div>
+            </a>
+            <a href="<?= $globalTotals['mlcs'] > 0 ? '#mlc-section' : get_site_url('index?cat=mlc') ?>" class="home-stat-tile">
+                <div class="home-stat-label">State MLCs</div>
+                <div class="home-stat-value" style="color:#4ADE80;"><?= number_format($globalTotals['mlcs']) ?></div>
+                <div class="home-stat-meta">UP, Bihar &amp; AP Councils</div>
+            </a>
+            <a href="<?= get_site_url('parties') ?>" class="home-stat-tile">
+                <div class="home-stat-label">Political Parties</div>
+                <div class="home-stat-value" style="color:#C4B5FD;"><?= number_format($globalTotals['parties']) ?></div>
+                <div class="home-stat-meta">ECI Symbols &amp; Profiles</div>
+            </a>
+            <a href="<?= get_site_url('pincode') ?>" class="home-stat-tile">
+                <div class="home-stat-label">Covered Blocks</div>
+                <div class="home-stat-value" style="color:#7DD3FC;"><?= number_format($globalTotals['blocks']) ?></div>
+                <div class="home-stat-meta">36 States &amp; 783 Districts</div>
+            </a>
         </div>
-    </div>
+    </section>
 
     <!-- Section C: Interactive Local Leaders Lookup Filter -->
-    <div style="background:#FFFFFF; border:1px solid var(--border-color); border-top:4px solid var(--green-main); border-radius:var(--radius-lg); padding:16px 18px; margin-bottom:20px; box-shadow:var(--shadow-sm);">
-        <form action="<?= get_site_url('index') ?>" method="GET" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(155px, 1fr)); gap:10px; align-items:flex-end;">
+    <div class="home-filter-card">
+        <form action="<?= get_site_url('index') ?>" method="GET" class="home-filter-grid">
             <div class="form-group" style="margin:0;">
                 <label class="form-label" style="font-size:0.78rem;">Type of Leader</label>
                 <select name="cat" class="form-control" style="padding:8px 10px; font-size:0.86rem;">
@@ -453,7 +461,7 @@ require_once __DIR__ . '/includes/header.php';
                 </select>
             </div>
 
-            <div class="form-group" style="margin:0;">
+            <div class="form-group home-filter-span-2" style="margin:0;">
                 <label class="form-label" style="font-size:0.78rem;">Search Name / Constituency / Party</label>
                 <input type="text" name="q" value="<?= e($searchQuery) ?>" placeholder="e.g. Rajiv Pratap Rudy, Saran, BJP..." class="form-control" style="padding:8px 10px; font-size:0.86rem;">
             </div>
@@ -501,96 +509,127 @@ require_once __DIR__ . '/includes/header.php';
         <?php endif; ?>
     </div>
 
-    <!-- Section D: Quick-Access Directory Shortcuts -->
+    <!-- Section D: Clean Single-Row Quick Directory Shortcuts -->
     <div class="quick-shortcuts">
         <a href="<?= get_site_url('index?' . http_build_query(array_filter(['cat' => 'mp-lok-sabha', 'state_code' => $viewStateCode, 'district_code' => $viewDistrictCode], fn($v) => $v !== ''))) ?>" class="shortcut-card">
             <div class="shortcut-icon-wrapper icon-navy">
                 <i class="fas fa-landmark"></i>
             </div>
-            <span>Lok Sabha MPs</span>
+            <span>Lok Sabha</span>
         </a>
         <a href="<?= get_site_url('index?' . http_build_query(array_filter(['cat' => 'mp-rajya-sabha', 'state_code' => $viewStateCode, 'district_code' => $viewDistrictCode], fn($v) => $v !== ''))) ?>" class="shortcut-card">
             <div class="shortcut-icon-wrapper icon-green">
                 <i class="fas fa-building-columns"></i>
             </div>
-            <span>Rajya Sabha MPs</span>
+            <span>Rajya Sabha</span>
         </a>
         <a href="<?= get_site_url('index?' . http_build_query(array_filter(['cat' => 'mlc', 'state_code' => $viewStateCode, 'district_code' => $viewDistrictCode], fn($v) => $v !== ''))) ?>" class="shortcut-card">
             <div class="shortcut-icon-wrapper icon-indigo">
                 <i class="fas fa-scroll"></i>
             </div>
-            <span>Council MLCs</span>
+            <span>MLCs</span>
         </a>
         <a href="<?= get_site_url('pincode') ?>" class="shortcut-card">
             <div class="shortcut-icon-wrapper icon-purple">
                 <i class="fas fa-map-pin"></i>
             </div>
-            <span>PIN Code Finder</span>
+            <span>PIN Finder</span>
         </a>
         <a href="<?= get_site_url('parties') ?>" class="shortcut-card">
-            <div class="shortcut-icon-wrapper icon-purple">
+            <div class="shortcut-icon-wrapper icon-orange">
                 <i class="fas fa-flag"></i>
             </div>
-            <span>Political Parties</span>
-        </a>
-        <a href="<?= get_site_url('leaders') ?>" class="shortcut-card">
-            <div class="shortcut-icon-wrapper icon-rose">
-                <i class="fas fa-layer-group"></i>
-            </div>
-            <span>All 25 Types</span>
-        </a>
-        <a href="<?= get_site_url('studio') ?>" class="shortcut-card">
-            <div class="shortcut-icon-wrapper icon-orange">
-                <i class="fas fa-paint-brush"></i>
-            </div>
-            <span>Poster Studio</span>
+            <span>Parties</span>
         </a>
     </div>
 
-    <!-- Section E: Canonical 25-Type Leader Taxonomy Pills -->
-    <section style="background:#FFFFFF; border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:16px; margin-bottom:24px; box-shadow:var(--shadow-sm);">
-        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:10px;">
-            <h2 style="font-size:0.95rem; font-weight:800; color:var(--navy-main); margin:0;">
-                <i class="fas fa-sitemap" style="color:var(--saffron-main);"></i> Browse by Type of Leader (25 Categories)
-            </h2>
-            <a href="<?= get_site_url('index?' . http_build_query(array_filter(['cat' => 'all', 'state_code' => $viewStateCode, 'district_code' => $viewDistrictCode, 'block_code' => $viewBlockCode, 'q' => $searchQuery], fn($v) => $v !== ''))) ?>"
-               style="padding:4px 12px; border-radius:var(--radius-full); font-size:0.78rem; font-weight:700; text-decoration:none; border:1px solid <?= $selectedCategory === 'all' ? 'var(--saffron-main)' : 'var(--border-color)' ?>; background:<?= $selectedCategory === 'all' ? 'var(--saffron-main)' : '#FFFFFF' ?>; color:<?= $selectedCategory === 'all' ? '#FFFFFF' : 'var(--navy-main)' ?>;">
-                Show Full Directory
-            </a>
+    <!-- Section E: Clean Compact Category Strip (+ expandable All 25 Categories) -->
+    <?php
+        $primarySlugs = ['mp-lok-sabha', 'mp-rajya-sabha', 'mlc', 'political-party-office', 'mla', 'mukhiya'];
+        $flatTypes = [];
+        foreach ($leaderTypeGroups as $group) {
+            foreach ($group['items'] as $ltItem) {
+                $flatTypes[$ltItem['slug']] = $ltItem;
+            }
+        }
+        $extraCategories = [];
+        foreach ($flatTypes as $sKey => $ltItem) {
+            if (!in_array($sKey, $primarySlugs, true)) {
+                $extraCategories[] = $ltItem;
+            }
+        }
+        $extraOpen = ($selectedCategory !== 'all' && $selectedCategory !== 'mp' && !in_array($selectedCategory, $primarySlugs, true));
+    ?>
+    <section style="background:#FFFFFF; border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:12px 16px; margin-bottom:24px; box-shadow:var(--shadow-sm);">
+        <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
+            <div style="display:flex; align-items:center; flex-wrap:wrap; gap:6px;">
+                <span style="font-size:0.78rem; font-weight:800; color:var(--navy-main); margin-right:4px;">
+                    <i class="fas fa-filter" style="color:var(--saffron-main);"></i> Category:
+                </span>
+                <a href="<?= get_site_url('index?' . http_build_query(array_filter(['cat' => 'all', 'state_code' => $viewStateCode, 'district_code' => $viewDistrictCode, 'block_code' => $viewBlockCode, 'q' => $searchQuery], fn($v) => $v !== ''))) ?>"
+                   style="display:inline-flex; align-items:center; gap:5px; padding:5px 12px; border-radius:var(--radius-full); font-size:0.78rem; font-weight:700; text-decoration:none; border:1px solid <?= $selectedCategory === 'all' ? 'var(--saffron-main)' : 'var(--border-color)' ?>; background:<?= $selectedCategory === 'all' ? 'var(--saffron-main)' : 'var(--white-surface)' ?>; color:<?= $selectedCategory === 'all' ? '#FFFFFF' : 'var(--navy-main)' ?>;">
+                    All
+                </a>
+                <?php foreach ($primarySlugs as $pSlug):
+                    if (!isset($flatTypes[$pSlug])) continue;
+                    $lt = $flatTypes[$pSlug];
+                    $cnt = $typeCounts[$pSlug] ?? 0;
+                    $isActive = ($selectedCategory === $pSlug) || ($selectedCategory === 'mp' && in_array($pSlug, ['mp-lok-sabha', 'mp-rajya-sabha'], true));
+                    $pillUrl = get_site_url('index?' . http_build_query(array_filter([
+                        'cat' => $pSlug,
+                        'state_code' => $viewStateCode,
+                        'district_code' => $viewDistrictCode,
+                        'block_code' => $viewBlockCode,
+                        'q' => $searchQuery,
+                    ], fn($v) => $v !== '')));
+                ?>
+                    <a href="<?= $pillUrl ?>"
+                       style="display:inline-flex; align-items:center; gap:5px; padding:5px 11px; border-radius:var(--radius-full); font-size:0.78rem; font-weight:700; text-decoration:none; border:1px solid <?= $isActive ? 'var(--saffron-main)' : 'var(--border-color)' ?>; background:<?= $isActive ? 'var(--saffron-main)' : 'var(--white-surface)' ?>; color:<?= $isActive ? '#FFFFFF' : 'var(--text-secondary)' ?>;">
+                        <span><?= e($lt['name']) ?></span>
+                        <?php if ($cnt > 0): ?>
+                            <span style="padding:1px 6px; border-radius:var(--radius-full); font-size:0.68rem; background:<?= $isActive ? 'rgba(255,255,255,0.25)' : '#E2E8F0' ?>; color:<?= $isActive ? '#FFFFFF' : 'var(--navy-main)' ?>;">
+                                <?= number_format($cnt) ?>
+                            </span>
+                        <?php endif; ?>
+                    </a>
+                <?php endforeach; ?>
+            </div>
+
+            <div style="display:flex; align-items:center; gap:6px;">
+                <button type="button" id="btnToggleHomeCategories"
+                        aria-expanded="<?= $extraOpen ? 'true' : 'false' ?>"
+                        aria-controls="moreHomeCategories"
+                        onclick="var d=document.getElementById('moreHomeCategories'); if(!d) return; var h=d.hasAttribute('hidden'); if(h){d.removeAttribute('hidden'); this.setAttribute('aria-expanded','true'); this.textContent='Less ▲';} else {d.setAttribute('hidden',''); this.setAttribute('aria-expanded','false'); this.textContent='All <?= count($flatTypes) ?> Types ▾';}"
+                        style="padding:5px 11px; border-radius:var(--radius-full); font-size:0.76rem; font-weight:700; border:1px solid var(--border-color); background:#FFFFFF; color:var(--navy-accent); cursor:pointer; white-space:nowrap;">
+                    <?= $extraOpen ? 'Less ▲' : ('All ' . count($flatTypes) . ' Types ▾') ?>
+                </button>
+            </div>
         </div>
 
-        <?php foreach ($leaderTypeGroups as $group): ?>
-            <div style="<?= (int)$group['group_no'] > 1 ? 'margin-top:10px; padding-top:10px; border-top:1px dashed var(--border-color);' : '' ?>">
-                <div style="font-size:0.74rem; font-weight:800; color:<?= (int)$group['group_no'] === 2 ? 'var(--green-main)' : 'var(--text-muted)' ?>; text-transform:uppercase; letter-spacing:0.04em; margin-bottom:6px;">
-                    <?= (int)$group['group_no'] ?>. <?= e($group['group_name']) ?>
-                </div>
-                <div style="display:flex; gap:6px; flex-wrap:wrap;">
-                    <?php foreach ($group['items'] as $lt):
-                        $slug = $lt['slug'];
-                        $cnt = $typeCounts[$slug] ?? 0;
-                        $isActive = ($selectedCategory === $slug) || ($selectedCategory === 'mp' && in_array($slug, ['mp-lok-sabha', 'mp-rajya-sabha'], true));
-                        $pillUrl = get_site_url('index?' . http_build_query(array_filter([
-                            'cat' => $slug,
-                            'state_code' => $viewStateCode,
-                            'district_code' => $viewDistrictCode,
-                            'block_code' => $viewBlockCode,
-                            'q' => $searchQuery,
-                        ], fn($v) => $v !== '')));
-                    ?>
-                        <a href="<?= $pillUrl ?>"
-                           style="display:inline-flex; align-items:center; gap:5px; padding:4px 10px; border-radius:var(--radius-full); font-size:0.78rem; font-weight:700; text-decoration:none; border:1px solid <?= $isActive ? 'var(--saffron-main)' : 'var(--border-color)' ?>; background:<?= $isActive ? 'var(--saffron-main)' : 'var(--white-surface)' ?>; color:<?= $isActive ? '#FFFFFF' : 'var(--text-secondary)' ?>;">
-                            <i class="fas <?= e($lt['icon_class']) ?>" style="font-size:0.7rem;"></i>
-                            <span><?= e($lt['name']) ?></span>
-                            <?php if ($cnt > 0): ?>
-                                <span style="padding:1px 6px; border-radius:var(--radius-full); font-size:0.68rem; background:<?= $isActive ? 'rgba(255,255,255,0.25)' : '#E2E8F0' ?>; color:<?= $isActive ? '#FFFFFF' : 'var(--navy-main)' ?>;">
-                                    <?= number_format($cnt) ?>
-                                </span>
-                            <?php endif; ?>
-                        </a>
-                    <?php endforeach; ?>
-                </div>
-            </div>
-        <?php endforeach; ?>
+        <div id="moreHomeCategories" <?= $extraOpen ? '' : 'hidden' ?> style="margin-top:10px; padding-top:10px; border-top:1px dashed var(--border-color); display:flex; gap:6px; flex-wrap:wrap;">
+            <?php foreach ($extraCategories as $lt):
+                $slug = $lt['slug'];
+                $cnt = $typeCounts[$slug] ?? 0;
+                $isActive = ($selectedCategory === $slug);
+                $pillUrl = get_site_url('index?' . http_build_query(array_filter([
+                    'cat' => $slug,
+                    'state_code' => $viewStateCode,
+                    'district_code' => $viewDistrictCode,
+                    'block_code' => $viewBlockCode,
+                    'q' => $searchQuery,
+                ], fn($v) => $v !== '')));
+            ?>
+                <a href="<?= $pillUrl ?>"
+                   style="display:inline-flex; align-items:center; gap:5px; padding:4px 10px; border-radius:var(--radius-full); font-size:0.76rem; font-weight:700; text-decoration:none; border:1px solid <?= $isActive ? 'var(--saffron-main)' : 'var(--border-color)' ?>; background:<?= $isActive ? 'var(--saffron-main)' : 'var(--white-surface)' ?>; color:<?= $isActive ? '#FFFFFF' : 'var(--text-secondary)' ?>;">
+                    <span><?= e($lt['name']) ?></span>
+                    <?php if ($cnt > 0): ?>
+                        <span style="padding:1px 6px; border-radius:var(--radius-full); font-size:0.68rem; background:<?= $isActive ? 'rgba(255,255,255,0.25)' : '#E2E8F0' ?>; color:<?= $isActive ? '#FFFFFF' : 'var(--navy-main)' ?>;">
+                            <?= number_format($cnt) ?>
+                        </span>
+                    <?php endif; ?>
+                </a>
+            <?php endforeach; ?>
+        </div>
     </section>
 
     <!-- Section F: Members of Parliament (`mp` table — Lok Sabha LS-18 & Rajya Sabha via sansad.in) -->

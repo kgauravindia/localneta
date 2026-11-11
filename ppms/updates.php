@@ -1,12 +1,12 @@
 <?php
-// ppms/updates.php - Superadmin Version Control & GitHub Sync Console for LocalNeta PPMS
+// ppms/updates.php - Clean Superadmin GitHub Updates Console for LocalNeta PPMS
 define('PPMS_INIT', true);
 require_once __DIR__ . '/includes/auth.php';
 require_once __DIR__ . '/../includes/vcs.php';
 
 $adminUser = ppms_require_auth();
 if (($adminUser['role'] ?? '') !== 'superadmin') {
-    ppms_set_flash('error', 'Only a Superadmin can manage version control and GitHub updates.');
+    ppms_set_flash('error', 'Only a Superadmin can manage system updates.');
     header('Location: ' . get_site_url('ppms'), true, 302);
     exit;
 }
@@ -25,13 +25,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($action === 'fetch') {
         $res = localneta_vcs_fetch();
         $st = $res['status'] ?? [];
-        $mode = $st['sync_mode'] ?? 'unavailable';
-        $_SESSION['ppms_vcs_console'] = [
-            'action' => $mode === 'git_cli' ? 'git fetch origin --prune --tags' : 'GitHub HTTPS API check',
-            'ok' => !empty($res['ok']),
-            'output' => (string)($res['output'] ?? ''),
-            'time' => date('d M Y, H:i:s'),
-        ];
         $targetLabel = 'origin/' . ($st['branch'] ?? localneta_github_branch());
         ppms_log_action($pdo, $adminUser, 'GITHUB_FETCH', null, $targetLabel, (string)$res['message'], 'system');
         ppms_set_flash(!empty($res['ok']) ? 'success' : 'error', (string)$res['message']);
@@ -42,15 +35,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($action === 'pull') {
         $res = localneta_vcs_pull();
         $st = $res['status'] ?? [];
-        $mode = $st['sync_mode'] ?? 'unavailable';
-        $_SESSION['ppms_vcs_console'] = [
-            'action' => $mode === 'git_cli'
-                ? ('git pull --ff-only origin ' . ($st['branch'] ?? localneta_github_branch()))
-                : ('GitHub HTTPS Archive Sync (' . ($st['branch'] ?? localneta_github_branch()) . ')'),
-            'ok' => !empty($res['ok']),
-            'output' => (string)($res['output'] ?? ''),
-            'time' => date('d M Y, H:i:s'),
-        ];
         if (!empty($res['ok'])) {
             get_db_connection();
             ppms_ensure_schema($pdo);
@@ -63,35 +47,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-$vcsConsole = null;
-if (!empty($_SESSION['ppms_vcs_console']) && is_array($_SESSION['ppms_vcs_console'])) {
-    $vcsConsole = $_SESSION['ppms_vcs_console'];
-    unset($_SESSION['ppms_vcs_console']);
-}
-
 $vcs = localneta_vcs_status();
 $caps = $vcs['caps'] ?? [];
 $syncMode = (string)($vcs['sync_mode'] ?? 'unavailable');
 $excludedItems = localneta_vcs_excluded_items();
-$hasSecretWarning = false;
+$trackedSecrets = [];
 foreach ($excludedItems as $exItem) {
     if (!empty($exItem['is_tracked_warning'])) {
-        $hasSecretWarning = true;
-        break;
+        $trackedSecrets[] = (string)$exItem['category'] . ' (' . (string)$exItem['pattern'] . ')';
     }
 }
+$hasSecretWarning = !empty($trackedSecrets);
 
 $appMeta = $vcs['app'] ?? localneta_app_version();
 $appVer = (string)($appMeta['version'] ?? '1.2.1');
 $releasedAt = (string)($appMeta['released_at'] ?? '');
 $repoDisplayUrl = (string)($vcs['origin_url'] ?: $vcs['expected_repo']);
 $repoBrowseUrl = preg_replace('/\.git$/i', '', $repoDisplayUrl);
+$repoShortLabel = preg_replace('#^https?://github\.com/#i', '', (string)$repoBrowseUrl);
 
 $syncLogsStmt = $pdo->query("
     SELECT * FROM ppms_audit_logs
     WHERE entity_type = 'system'
     ORDER BY created_at DESC, id DESC
-    LIMIT 8
+    LIMIT 6
 ");
 $syncLogs = $syncLogsStmt ? $syncLogsStmt->fetchAll() : [];
 
@@ -116,33 +95,30 @@ $pullBlocked = ($syncMode === 'unavailable')
 $summary = ppms_party_summary($pdo);
 $ppmsTotalParties = $summary['total_rows'];
 $activeNav = 'updates';
-$ppmsPageTitle = 'Version Control & GitHub Sync';
+$ppmsPageTitle = 'GitHub Updates';
 require_once __DIR__ . '/includes/layout_top.php';
 ?>
 
-<!-- Hero Card -->
+<!-- Clean Update Action Bar -->
 <div class="ppms-card" style="border-top:4px solid var(--ppms-saffron);">
     <div class="ppms-card-body d-flex flex-wrap justify-content-between align-items-center gap-3">
         <div>
             <div class="d-flex flex-wrap align-items-center gap-2 mb-1">
                 <h2 class="h5 fw-bold mb-0" style="color:var(--ppms-navy);">
-                    <i class="fab fa-github me-1"></i> Version Control &amp; GitHub Sync
+                    <i class="fab fa-github me-1"></i> GitHub Updates
                 </h2>
                 <span class="badge bg-dark">v<?= e($appVer) ?></span>
                 <span class="ppms-badge <?= e($stateMeta['bg']) ?>">
                     <i class="fas <?= e($stateMeta['icon']) ?>"></i> <?= e($vcs['status_label']) ?>
                 </span>
-                <span class="badge bg-light text-dark border">
-                    <?= $syncMode === 'git_cli' ? 'Engine: Git CLI' : ($syncMode === 'github_https' ? 'Engine: GitHub HTTPS Sync' : 'Engine: Unavailable') ?>
-                </span>
             </div>
             <p class="small text-muted mb-0">
-                Public Repository:
                 <a href="<?= e((string)$repoBrowseUrl) ?>" target="_blank" rel="noopener" class="fw-semibold text-decoration-none">
-                    <?= e($repoDisplayUrl) ?> <i class="fas fa-external-link-alt ms-1" style="font-size:0.72rem;"></i>
+                    <?= e($repoShortLabel) ?> <i class="fas fa-external-link-alt ms-1" style="font-size:0.7rem;"></i>
                 </a>
-                &bull; Branch: <code><?= e($vcs['branch']) ?></code>
-                <?php if ($releasedAt !== ''): ?>&bull; Release: <strong><?= e($releasedAt) ?></strong><?php endif; ?>
+                &bull; Branch: <strong><?= e($vcs['branch']) ?></strong>
+                <?php if ($releasedAt !== ''): ?>&bull; Released <?= e(date('d M Y', strtotime($releasedAt) ?: time())) ?><?php endif; ?>
+                <?php if (!empty($vcs['last_fetched_at'])): ?>&bull; Last checked <?= e(date('d M, H:i', strtotime((string)$vcs['last_fetched_at']) ?: time())) ?><?php endif; ?>
             </p>
         </div>
 
@@ -151,92 +127,65 @@ require_once __DIR__ . '/includes/layout_top.php';
                 <input type="hidden" name="csrf_token" value="<?= e(ppms_csrf_token()) ?>">
                 <input type="hidden" name="action" value="fetch">
                 <button type="submit" class="btn btn-ppms-navy btn-sm px-3 py-2" <?= $fetchBlocked ? 'disabled' : '' ?>>
-                    <i class="fas fa-sync-alt me-1"></i> Check GitHub Updates
+                    <i class="fas fa-sync-alt me-1"></i> Check Updates
                 </button>
             </form>
 
             <form method="POST" action="<?= e(get_site_url('ppms/updates')) ?>" class="m-0"
-                  onsubmit="return confirm('Pull latest updates from GitHub (origin/<?= e($vcs['branch']) ?>) into this server? Ignored local configs, SQL dumps, and uploads stay protected.');">
+                  onsubmit="return confirm('Pull latest updates from GitHub into this server? Local configs, database dumps, and uploads remain protected.');">
                 <input type="hidden" name="csrf_token" value="<?= e(ppms_csrf_token()) ?>">
                 <input type="hidden" name="action" value="pull">
                 <button type="submit" class="btn btn-ppms-green btn-sm px-3 py-2" <?= $pullBlocked ? 'disabled' : '' ?>>
                     <i class="fas fa-cloud-download-alt me-1"></i>
-                    <?= $vcs['behind_count'] > 0 ? ('Pull ' . (int)$vcs['behind_count'] . ' Update' . ($vcs['behind_count'] === 1 ? '' : 's')) : 'Sync / Pull Updates' ?>
+                    <?= $vcs['behind_count'] > 0 ? ('Pull ' . (int)$vcs['behind_count'] . ' Update' . ($vcs['behind_count'] === 1 ? '' : 's')) : 'Pull Updates' ?>
                 </button>
             </form>
         </div>
     </div>
-
-    <!-- Server Capabilities Strip -->
-    <div class="px-3 py-2 border-top bg-light d-flex flex-wrap align-items-center justify-content-between gap-2 small">
-        <span class="text-secondary">
-            <i class="fas fa-server me-1 text-primary"></i> <?= e((string)($caps['reason'] ?? '')) ?>
-        </span>
-        <div class="d-flex flex-wrap gap-2">
-            <span class="badge <?= !empty($caps['git_bin']) ? 'bg-success-subtle text-success border border-success-subtle' : 'bg-secondary-subtle text-secondary border' ?>">
-                Git CLI: <?= !empty($caps['git_bin']) ? 'Yes' : 'No' ?>
-            </span>
-            <span class="badge <?= !empty($caps['shell_exec_ready']) ? 'bg-success-subtle text-success border border-success-subtle' : 'bg-warning-subtle text-warning-emphasis border border-warning-subtle' ?>">
-                proc_open/exec: <?= !empty($caps['proc_open']) ? 'proc_open' : (!empty($caps['exec']) ? 'exec' : 'Disabled') ?>
-            </span>
-            <span class="badge <?= !empty($caps['has_dot_git']) ? 'bg-success-subtle text-success border border-success-subtle' : 'bg-secondary-subtle text-secondary border' ?>">
-                .git Folder: <?= !empty($caps['has_dot_git']) ? 'Present' : 'Not Present' ?>
-            </span>
-            <span class="badge <?= (!empty($caps['curl']) || !empty($caps['allow_url_fopen'])) ? 'bg-success-subtle text-success border border-success-subtle' : 'bg-danger-subtle text-danger border' ?>">
-                cURL: <?= !empty($caps['curl']) ? 'Enabled' : (!empty($caps['allow_url_fopen']) ? 'fopen' : 'Off') ?>
-            </span>
-            <span class="badge <?= !empty($caps['zip_ready']) ? 'bg-success-subtle text-success border border-success-subtle' : 'bg-danger-subtle text-danger border' ?>">
-                ZipArchive: <?= !empty($caps['zip_ready']) ? 'Enabled' : 'Disabled' ?>
-            </span>
-        </div>
-    </div>
 </div>
 
-<!-- KPI Summary Cards -->
+<!-- Compact Summary Row -->
 <div class="row g-3 mb-4">
-    <div class="col-6 col-xl-3">
+    <div class="col-md-4">
         <div class="ppms-kpi-card" style="border-top:3px solid var(--ppms-navy);">
             <div class="ppms-kpi-top">
-                <span class="ppms-kpi-label">App Version</span>
+                <span class="ppms-kpi-label">Installed Version</span>
                 <span class="ppms-kpi-icon" style="background:#EEF2FF; color:var(--ppms-navy);"><i class="fas fa-tag"></i></span>
             </div>
             <div class="ppms-kpi-value">v<?= e($appVer) ?></div>
-            <div class="small text-muted mt-2"><?= e((string)($appMeta['codename'] ?? 'LocalNeta')) ?></div>
-        </div>
-    </div>
-
-    <div class="col-6 col-xl-3">
-        <div class="ppms-kpi-card" style="border-top:3px solid var(--ppms-saffron);">
-            <div class="ppms-kpi-top">
-                <span class="ppms-kpi-label">Local Commit (HEAD)</span>
-                <span class="ppms-kpi-icon" style="background:#FFF3EB; color:var(--ppms-saffron);"><i class="fas fa-code-commit"></i></span>
-            </div>
-            <div class="ppms-kpi-value"><code><?= e($vcs['head_short'] ?: ($syncMode === 'github_https' ? 'UNLINKED' : 'NONE')) ?></code></div>
-            <div class="small text-muted mt-2 text-truncate" title="<?= e($vcs['head_subject'] ?: '') ?>">
-                <?= e($vcs['head_subject'] ?: ($syncMode === 'github_https' ? 'Click Sync / Pull Updates to link SHA' : 'Waiting for initial commit')) ?>
+            <div class="small text-muted mt-2 text-truncate">
+                <?= !empty($vcs['head_short']) ? ('Commit ' . e($vcs['head_short']) . (!empty($vcs['head_subject']) ? ' &bull; ' . e($vcs['head_subject']) : '')) : e((string)($appMeta['codename'] ?? 'LocalNeta')) ?>
             </div>
         </div>
     </div>
 
-    <div class="col-6 col-xl-3">
+    <div class="col-md-4">
         <div class="ppms-kpi-card" style="border-top:3px solid #0284C7;">
             <div class="ppms-kpi-top">
-                <span class="ppms-kpi-label">Remote (<?= e($vcs['tracking_ref']) ?>)</span>
+                <span class="ppms-kpi-label">Remote Status</span>
                 <span class="ppms-kpi-icon" style="background:#E0F2FE; color:#0284C7;"><i class="fab fa-github"></i></span>
             </div>
-            <div class="ppms-kpi-value"><code><?= e($vcs['remote_head_short'] ?: (!empty($vcs['remote_version']) ? 'v' . $vcs['remote_version'] : 'UNFETCHED')) ?></code></div>
+            <div class="ppms-kpi-value">
+                <?php if ($vcs['behind_count'] > 0): ?>
+                    <?= (int)$vcs['behind_count'] ?> Update<?= (int)$vcs['behind_count'] === 1 ? '' : 's' ?> Ready
+                <?php elseif (!empty($vcs['remote_version'])): ?>
+                    v<?= e((string)$vcs['remote_version']) ?>
+                <?php elseif (!empty($vcs['remote_head_short'])): ?>
+                    <?= e((string)$vcs['remote_head_short']) ?>
+                <?php else: ?>
+                    Ready
+                <?php endif; ?>
+            </div>
             <div class="small text-muted mt-2">
-                Behind: <strong><?= (int)$vcs['behind_count'] ?></strong>
-                <?php if ($syncMode === 'git_cli'): ?>&bull; Ahead: <strong><?= (int)$vcs['ahead_count'] ?></strong><?php endif; ?>
-                <?php if (!empty($vcs['last_fetched_at'])): ?>&bull; Checked: <?= e(date('H:i', strtotime((string)$vcs['last_fetched_at']))) ?><?php endif; ?>
+                <?= $vcs['behind_count'] > 0 ? 'Click Pull Updates to apply latest changes' : 'Click Check Updates anytime to verify GitHub' ?>
             </div>
         </div>
     </div>
 
-    <div class="col-6 col-xl-3">
+    <div class="col-md-4">
         <div class="ppms-kpi-card" style="border-top:3px solid <?= $hasSecretWarning ? '#DC2626' : 'var(--ppms-green)' ?>;">
             <div class="ppms-kpi-top">
-                <span class="ppms-kpi-label">Public Repo Shield</span>
+                <span class="ppms-kpi-label">Data Safety</span>
                 <span class="ppms-kpi-icon" style="background:<?= $hasSecretWarning ? '#FEE2E2; color:#DC2626' : '#EAF7F0; color:var(--ppms-green)' ?>;">
                     <i class="fas fa-shield-alt"></i>
                 </span>
@@ -245,42 +194,39 @@ require_once __DIR__ . '/includes/layout_top.php';
                 <?= $hasSecretWarning ? 'Check Alert' : 'Protected' ?>
             </div>
             <div class="small text-muted mt-2">
-                Excluded rules: <strong><?= count($excludedItems) ?></strong>
-                <?php if ($syncMode === 'git_cli'): ?>&bull; Dirty tracked: <strong><?= count($vcs['dirty_files']) ?></strong><?php endif; ?>
+                Configs, SQL backups &amp; uploads are preserved during sync
             </div>
         </div>
     </div>
 </div>
 
-<?php if ($syncMode === 'github_https' && empty($caps['zip_ready'])): ?>
-    <div class="alert alert-warning border-0 shadow-sm mb-4">
+<!-- Alerts shown only when action or attention is needed -->
+<?php if ($hasSecretWarning): ?>
+    <div class="alert alert-danger border-0 shadow-sm mb-4">
         <i class="fas fa-exclamation-triangle me-1"></i>
-        <strong>PHP ZipArchive (<code>ext-zip</code>) is disabled on this server:</strong> You can check for new GitHub commits, but automatic one-click pulling requires enabling <code>zip</code> in your PHP extensions panel.
+        <strong>Sensitive Path Tracked:</strong> Remove <?= e(implode(', ', $trackedSecrets)) ?> from Git tracking before pushing to the public repository.
     </div>
 <?php endif; ?>
 
-<?php if ($vcsConsole): ?>
-    <div class="ppms-card">
-        <div class="ppms-card-header">
-            <h3 class="ppms-card-title">
-                <i class="fas fa-terminal <?= $vcsConsole['ok'] ? 'text-success' : 'text-danger' ?>"></i>
-                Last Sync Output
-            </h3>
-            <span class="small text-muted"><code><?= e($vcsConsole['action']) ?></code> &bull; <?= e($vcsConsole['time']) ?></span>
-        </div>
-        <div class="ppms-card-body p-0">
-            <pre class="m-0 p-3 bg-dark text-light small" style="white-space:pre-wrap; word-break:break-word; max-height:240px; overflow:auto;"><?= e($vcsConsole['output'] ?: 'Done.') ?></pre>
-        </div>
+<?php if ($syncMode === 'unavailable'): ?>
+    <div class="alert alert-danger border-0 shadow-sm mb-4">
+        <i class="fas fa-ban me-1"></i>
+        <strong>GitHub Sync Unavailable:</strong> <?= e((string)($caps['reason'] ?? 'Outbound HTTP requests or Git commands are unavailable on this server.')) ?>
+    </div>
+<?php elseif ($syncMode === 'github_https' && empty($caps['zip_ready'])): ?>
+    <div class="alert alert-warning border-0 shadow-sm mb-4">
+        <i class="fas fa-exclamation-triangle me-1"></i>
+        <strong>ZipArchive Required:</strong> Enable the PHP <code>zip</code> extension in your hosting control panel to allow one-click updates.
     </div>
 <?php endif; ?>
 
 <?php if ($syncMode === 'git_cli' && !empty($vcs['dirty_files'])): ?>
     <div class="alert alert-warning border-0 shadow-sm mb-4">
-        <div class="fw-bold mb-1"><i class="fas fa-exclamation-triangle me-1"></i> Uncommitted Tracked Changes Detected (Pull Safely Paused)</div>
-        <div class="small mb-2">Fast-forward GitHub pulls require clean tracked files so local changes are never overwritten:</div>
+        <div class="fw-bold mb-1"><i class="fas fa-exclamation-triangle me-1"></i> Local File Changes Detected</div>
+        <div class="small mb-2">Updates are paused until local tracked modifications are committed or reverted:</div>
         <ul class="small mb-0 ps-3">
-            <?php foreach (array_slice($vcs['dirty_files'], 0, 12) as $df): ?>
-                <li><code>[<?= e($df['code']) ?>]</code> <code><?= e($df['path']) ?></code></li>
+            <?php foreach (array_slice($vcs['dirty_files'], 0, 8) as $df): ?>
+                <li><code><?= e($df['path']) ?></code></li>
             <?php endforeach; ?>
         </ul>
     </div>
@@ -289,15 +235,14 @@ require_once __DIR__ . '/includes/layout_top.php';
 <?php if (!empty($vcs['incoming_commits'])): ?>
     <div class="ppms-card" style="border-left:4px solid var(--ppms-saffron);">
         <div class="ppms-card-header">
-            <h3 class="ppms-card-title"><i class="fas fa-cloud-download-alt text-warning"></i> Incoming Commits Waiting on GitHub (<?= count($vcs['incoming_commits']) ?>)</h3>
+            <h3 class="ppms-card-title"><i class="fas fa-cloud-download-alt text-warning"></i> Pending Updates (<?= count($vcs['incoming_commits']) ?>)</h3>
         </div>
         <div class="table-responsive">
             <table class="table ppms-table mb-0">
                 <thead>
                     <tr>
                         <th>Commit</th>
-                        <th>Message</th>
-                        <th>Author</th>
+                        <th>Summary</th>
                         <th>Date</th>
                     </tr>
                 </thead>
@@ -306,7 +251,6 @@ require_once __DIR__ . '/includes/layout_top.php';
                         <tr>
                             <td><code><?= e($ic['short']) ?></code></td>
                             <td class="fw-semibold text-dark"><?= e($ic['subject']) ?></td>
-                            <td class="small text-muted"><?= e($ic['author']) ?></td>
                             <td class="small text-muted text-nowrap"><?= e($ic['date'] ? date('d M Y, H:i', strtotime((string)$ic['date']) ?: time()) : '-') ?></td>
                         </tr>
                     <?php endforeach; ?>
@@ -316,90 +260,36 @@ require_once __DIR__ . '/includes/layout_top.php';
     </div>
 <?php endif; ?>
 
-<!-- Explicit Excluded List (Not Pushed to Public Repo) -->
-<div class="ppms-card">
-    <div class="ppms-card-header">
-        <h3 class="ppms-card-title"><i class="fas fa-user-secret text-danger"></i> Files &amp; Folders NOT Pushed to Public GitHub</h3>
-        <span class="small text-muted">Enforced via <code>.gitignore</code>, Sync Guard &amp; web server <code>403</code> rules</span>
-    </div>
-    <div class="table-responsive">
-        <table class="table ppms-table mb-0">
-            <thead>
-                <tr>
-                    <th>Category</th>
-                    <th>Excluded Path / Pattern</th>
-                    <th>Why Excluded from Public Repo</th>
-                    <th class="text-nowrap">Local Disk Status</th>
-                    <th class="text-end">Protection</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($excludedItems as $ex): ?>
-                    <tr>
-                        <td class="fw-bold text-dark text-nowrap"><?= e($ex['category']) ?></td>
-                        <td><code class="small"><?= e($ex['pattern']) ?></code></td>
-                        <td class="small text-secondary"><?= e($ex['reason']) ?></td>
-                        <td class="small text-muted text-nowrap">
-                            <?php if ($ex['exists_on_disk']): ?>
-                                <strong><?= (int)$ex['file_count'] ?></strong> file<?= (int)$ex['file_count'] === 1 ? '' : 's' ?> &bull; <?= e($ex['size_label']) ?>
-                            <?php else: ?>
-                                <span>None on disk</span>
-                            <?php endif; ?>
-                        </td>
-                        <td class="text-end text-nowrap">
-                            <?php if ($ex['is_tracked_warning']): ?>
-                                <span class="ppms-badge ppms-badge-delisted"><i class="fas fa-exclamation-circle"></i> Tracked Alert</span>
-                            <?php elseif ($ex['is_ignored']): ?>
-                                <span class="ppms-badge ppms-badge-active"><i class="fas fa-shield-halved"></i> Ignored &amp; Safe</span>
-                            <?php else: ?>
-                                <span class="ppms-badge ppms-badge-registered"><i class="fas fa-shield-halved"></i> Sync Guarded</span>
-                            <?php endif; ?>
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
-    </div>
-</div>
-
-<!-- Commit History & Sync Audit Trail -->
+<!-- Clean Commit History & Sync Activity -->
 <div class="row g-3">
     <div class="col-lg-7">
         <div class="ppms-card h-100 mb-0">
             <div class="ppms-card-header">
                 <h3 class="ppms-card-title">
-                    <i class="fas fa-code-branch text-primary"></i>
-                    <?= $syncMode === 'git_cli' ? 'Local Commit History' : 'Fetched GitHub Commit History' ?>
+                    <i class="fas fa-code-branch text-primary"></i> Recent Commits
                 </h3>
-                <?php if ($vcs['git_version'] !== ''): ?>
-                    <span class="small text-muted"><?= e($vcs['git_version']) ?></span>
-                <?php elseif ($syncMode === 'github_https'): ?>
-                    <span class="small text-muted">GitHub REST API v3</span>
-                <?php endif; ?>
             </div>
             <div class="table-responsive">
                 <table class="table ppms-table mb-0">
                     <thead>
                         <tr>
-                            <th>SHA</th>
-                            <th>Commit Summary</th>
-                            <th>Author</th>
-                            <th>Timestamp</th>
+                            <th>Commit</th>
+                            <th>Summary</th>
+                            <th>Date</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php if (empty($vcs['recent_commits'])): ?>
                             <tr>
-                                <td colspan="4" class="text-center py-4 text-muted">
-                                    <?= $syncMode === 'github_https' ? 'Click "Check GitHub Updates" above to fetch commit history from GitHub.' : 'No Git commits recorded yet.' ?>
+                                <td colspan="3" class="text-center py-4 text-muted">
+                                    Click &ldquo;Check Updates&rdquo; to load recent commits from GitHub.
                                 </td>
                             </tr>
                         <?php else: ?>
-                            <?php foreach ($vcs['recent_commits'] as $cm): ?>
+                            <?php foreach (array_slice($vcs['recent_commits'], 0, 6) as $cm): ?>
                                 <tr>
                                     <td><code><?= e($cm['short']) ?></code></td>
                                     <td class="small fw-semibold text-dark"><?= e($cm['subject']) ?></td>
-                                    <td class="small text-muted"><?= e($cm['author']) ?></td>
                                     <td class="small text-muted text-nowrap"><?= e($cm['date'] ? date('d M Y, H:i', strtotime((string)$cm['date']) ?: time()) : '-') ?></td>
                                 </tr>
                             <?php endforeach; ?>
@@ -413,23 +303,24 @@ require_once __DIR__ . '/includes/layout_top.php';
     <div class="col-lg-5">
         <div class="ppms-card h-100 mb-0">
             <div class="ppms-card-header">
-                <h3 class="ppms-card-title"><i class="fas fa-history text-success"></i> Recent GitHub Sync Logs</h3>
+                <h3 class="ppms-card-title"><i class="fas fa-history text-success"></i> Sync Activity</h3>
                 <a href="<?= e(get_site_url('ppms/logs?entity_type=system')) ?>" class="btn btn-light border btn-sm fw-semibold">All Logs</a>
             </div>
             <div class="list-group list-group-flush">
                 <?php if (empty($syncLogs)): ?>
                     <div class="list-group-item text-muted small py-4 text-center">
-                        No GitHub fetch or pull operations logged yet.
+                        No update checks or pulls logged yet.
                     </div>
                 <?php else: ?>
                     <?php foreach ($syncLogs as $sl): ?>
                         <div class="list-group-item px-3 py-2">
                             <div class="d-flex justify-content-between align-items-center">
-                                <span class="badge bg-light text-dark border" style="font-size:0.68rem;"><?= e($sl['action']) ?></span>
+                                <span class="badge bg-light text-dark border" style="font-size:0.68rem;">
+                                    <?= $sl['action'] === 'GITHUB_PULL' ? 'Pull Update' : 'Check Updates' ?>
+                                </span>
                                 <small class="text-muted" style="font-size:0.72rem;"><?= e(date('d M, H:i', strtotime((string)$sl['created_at']))) ?></small>
                             </div>
-                            <div class="small fw-semibold text-dark mt-1"><?= e($sl['details'] ?: $sl['party_name'] ?: '-') ?></div>
-                            <div class="text-muted" style="font-size:0.72rem;">By @<?= e($sl['username']) ?> &bull; <?= e($sl['party_name'] ?: 'origin') ?></div>
+                            <div class="small fw-semibold text-dark mt-1"><?= e($sl['details'] ?: '-') ?></div>
                         </div>
                     <?php endforeach; ?>
                 <?php endif; ?>

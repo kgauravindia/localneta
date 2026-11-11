@@ -62,38 +62,25 @@ $currentPage = basename($_SERVER['SCRIPT_NAME'] ?: ($_SERVER['PHP_SELF'] ?? 'ind
                 <img src="<?= get_site_url('assets/images/logo.png') ?>" alt="LocalNeta Emblem" class="brand-logo-img">
                 <div class="brand-text">
                     <h1>Local<span>Neta</span></h1>
-                    <div class="brand-tagline">Your Leaders, Your Issues 🇮🇳</div>
+                    <div class="brand-tagline">Your Leaders, Your Issues</div>
                 </div>
             </a>
 
-            <!-- Desktop Nav Links -->
-            <nav class="desktop-nav">
-                <a href="<?= get_site_url('index') ?>" class="nav-link <?= $currentPage === 'index' ? 'active' : '' ?>">
-                    <i class="fas fa-home"></i> Home
-                </a>
-                <a href="<?= get_site_url('leaders') ?>" class="nav-link <?= $currentPage === 'leaders' || $currentPage === 'profile' ? 'active' : '' ?>">
-                    <i class="fas fa-user-tie"></i> Leaders
-                </a>
-                <a href="<?= get_site_url('issues') ?>" class="nav-link <?= $currentPage === 'issues' ? 'active' : '' ?>">
-                    <i class="fas fa-bullhorn"></i> Issues & Projects
-                </a>
-                <a href="<?= get_site_url('elections') ?>" class="nav-link <?= ($currentPage === 'elections' || $currentPage === 'mp' || $currentPage === 'mlc') ? 'active' : '' ?>">
-                    <i class="fas fa-vote-yea"></i> Elections
-                </a>
-                <a href="<?= get_site_url('parties') ?>" class="nav-link <?= ($currentPage === 'parties' || $currentPage === 'political-party') ? 'active' : '' ?>">
-                    <i class="fas fa-flag"></i> Parties
-                </a>
-                <a href="<?= get_site_url('dashboard') ?>" class="nav-link <?= $currentPage === 'dashboard' ? 'active' : '' ?>">
-                    <i class="fas fa-chart-line"></i> Dashboard
-                </a>
+            <!-- Desktop Nav Links (Clean & Short) -->
+            <nav class="desktop-nav" aria-label="Primary Navigation">
+                <a href="<?= get_site_url('index') ?>" class="nav-link <?= $currentPage === 'index' ? 'active' : '' ?>">Home</a>
+                <a href="<?= get_site_url('leaders') ?>" class="nav-link <?= in_array($currentPage, ['leaders', 'profile', 'user-profile'], true) ? 'active' : '' ?>">Leaders</a>
+                <a href="<?= get_site_url('parties') ?>" class="nav-link <?= in_array($currentPage, ['parties', 'political-party'], true) ? 'active' : '' ?>">Parties</a>
+                <a href="<?= get_site_url('elections') ?>" class="nav-link <?= in_array($currentPage, ['elections', 'mp', 'mlc'], true) ? 'active' : '' ?>">Elections</a>
+                <a href="<?= get_site_url('issues') ?>" class="nav-link <?= $currentPage === 'issues' ? 'active' : '' ?>">Issues</a>
             </nav>
 
             <!-- Header Actions -->
             <div class="header-actions">
-                <button type="button" class="btn-search-trigger" onclick="openSearchModal()" style="background:none; border:none; cursor:pointer; font-size:1.15rem; color:var(--navy-main); padding:6px;" title="Search">
+                <button type="button" class="btn-search-trigger" onclick="openSearchModal()" title="Search Leaders, Parties &amp; PIN Codes" aria-label="Search">
                     <i class="fas fa-search"></i>
                 </button>
-                <a href="<?= get_site_url('studio') ?>" class="btn-studio-cta" title="Create Posters & Slogans in Studio">
+                <a href="<?= get_site_url('studio') ?>" class="btn-studio-cta" title="Create Posters &amp; Slogans in Studio" aria-label="Poster Studio">
                     <i class="fas fa-paint-brush"></i>
                     <span>Studio</span>
                 </a>
@@ -122,13 +109,9 @@ $currentPage = basename($_SERVER['SCRIPT_NAME'] ?: ($_SERVER['PHP_SELF'] ?? 'ind
                         </div>
                     </div>
                 <?php else: ?>
-                    <a href="<?= get_site_url('login') ?>" class="btn-header-login" title="Sign In to view masked mobile &amp; email">
+                    <a href="<?= get_site_url('login') ?>" class="btn-header-login" title="Sign In or Register" aria-label="Sign In">
                         <i class="fas fa-right-to-bracket"></i>
-                        <span>Login</span>
-                    </a>
-                    <a href="<?= get_site_url('register') ?>" class="btn-header-register" title="Citizen or Politician Registration">
-                        <i class="fas fa-user-plus"></i>
-                        <span>Register</span>
+                        <span>Sign In</span>
                     </a>
                 <?php endif; ?>
             </div>
