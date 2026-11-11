@@ -202,14 +202,17 @@ require_once __DIR__ . '/includes/header.php';
     <!-- Page Header -->
     <div class="tiranga-banner" style="margin-bottom:24px;">
         <div>
-            <h2><i class="fas fa-vote-yea" style="color:var(--saffron-main);"></i> Election & Voter Awareness Hub</h2>
-            <p>Official voter registration portals, electoral roll search, polling booth guides, and civic rights explainers.</p>
+            <h2><i class="fas fa-vote-yea" style="color:var(--saffron-main);"></i> Election &amp; Voter Awareness Hub</h2>
+            <p>Official voter registration portals, electoral roll search, upcoming election schedules, and civic rights explainers.</p>
         </div>
         <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+            <a href="#upcoming-elections" class="btn-primary-tiranga" style="padding:8px 16px; font-size:0.85rem;">
+                <i class="fas fa-calendar-days"></i> Upcoming Elections
+            </a>
             <a href="<?= get_site_url('parties') ?>" class="btn-green-tiranga" style="padding:8px 16px; font-size:0.85rem;">
                 <i class="fas fa-flag"></i> Political Parties
             </a>
-            <a href="https://voters.eci.gov.in" target="_blank" rel="noopener" class="btn-primary-tiranga" style="padding:8px 16px; font-size:0.85rem;">
+            <a href="https://voters.eci.gov.in" target="_blank" rel="noopener" class="btn-profile-view" style="padding:8px 16px; font-size:0.85rem; border:1px solid rgba(255,255,255,0.35); background:rgba(255,255,255,0.15); color:#FFFFFF;">
                 <i class="fas fa-external-link-alt"></i> ECI Portal
             </a>
         </div>
@@ -259,6 +262,376 @@ require_once __DIR__ . '/includes/header.php';
                 </p>
                 <a href="tel:1950" class="btn-green-tiranga" style="width:100%; text-align:center; padding:8px 12px; font-size:0.88rem;">
                     <i class="fas fa-phone"></i> Call Toll-Free 1950
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Upcoming Elections Calendar Section (Official ECI Calendar) -->
+    <section id="upcoming-elections" style="background:#FFFFFF; border-radius:var(--radius-lg); border:1px solid var(--border-color); border-top:4px solid var(--navy-accent); padding:24px; margin-bottom:30px; box-shadow:var(--shadow-sm);">
+        <div class="section-header" style="flex-wrap:wrap; gap:12px; margin-bottom:18px;">
+            <div>
+                <div style="display:inline-flex; align-items:center; gap:6px; background:var(--navy-light); color:var(--navy-accent); padding:3px 10px; border-radius:20px; font-size:0.75rem; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px;">
+                    <i class="fas fa-check-double"></i> Verified Official Schedule &bull; ECI Calendar
+                </div>
+                <h2 class="section-title" style="margin-bottom:4px;">
+                    <i class="fas fa-calendar-check" style="color:var(--navy-accent);"></i> Upcoming Elections in India (Official ECI Calendar)
+                </h2>
+                <p style="font-size:0.88rem; color:var(--text-secondary); margin:0;">
+                    Official schedule of forthcoming State Legislative Assembly general elections, Constitutional Presidential &amp; Vice-Presidential polls, Rajya Sabha &amp; Vidhan Parishad biennial cycles, and statutory bye-elections compiled from the <strong>Election Commission of India (eci.gov.in)</strong>.
+                </p>
+            </div>
+            <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+                <a href="https://www.eci.gov.in/term-of-the-houses" target="_blank" rel="noopener" class="badge-tag badge-verified" style="text-decoration:none; padding:6px 12px; font-size:0.8rem;">
+                    <i class="fas fa-file-contract"></i> ECI Term of Houses <i class="fas fa-external-link-alt" style="font-size:0.65rem;"></i>
+                </a>
+                <a href="https://www.eci.gov.in/press-notes" target="_blank" rel="noopener" class="badge-tag badge-elected" style="text-decoration:none; padding:6px 12px; font-size:0.8rem;">
+                    <i class="fas fa-bullhorn"></i> Official Press Notes <i class="fas fa-external-link-alt" style="font-size:0.65rem;"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- Key Metrics Strip -->
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(210px, 1fr)); gap:14px; margin-bottom:24px;">
+            <div style="background:var(--saffron-light); border-left:4px solid var(--saffron-main); border-radius:var(--radius-md); padding:12px 14px;">
+                <div style="font-size:0.75rem; font-weight:700; text-transform:uppercase; color:var(--saffron-dark); letter-spacing:0.4px;">Next General Assembly Cycle</div>
+                <div style="font-size:1.35rem; font-weight:800; color:var(--navy-main); margin-top:2px;">7 States / UTs</div>
+                <div style="font-size:0.75rem; color:var(--text-secondary); margin-top:2px;">1,054 Assembly Constituencies (2027)</div>
+            </div>
+            <div style="background:var(--navy-light); border-left:4px solid var(--navy-accent); border-radius:var(--radius-md); padding:12px 14px;">
+                <div style="font-size:0.75rem; font-weight:700; text-transform:uppercase; color:var(--navy-accent); letter-spacing:0.4px;">Supreme Constitutional Polls</div>
+                <div style="font-size:1.35rem; font-weight:800; color:var(--navy-main); margin-top:2px;">July &amp; Aug 2027</div>
+                <div style="font-size:0.75rem; color:var(--text-secondary); margin-top:2px;">President &amp; Vice-President of India</div>
+            </div>
+            <div style="background:var(--green-light); border-left:4px solid var(--green-main); border-radius:var(--radius-md); padding:12px 14px;">
+                <div style="font-size:0.75rem; font-weight:700; text-transform:uppercase; color:var(--green-dark); letter-spacing:0.4px;">Upper House Continuous Cycles</div>
+                <div style="font-size:1.35rem; font-weight:800; color:var(--navy-main); margin-top:2px;">Biennial Retirals</div>
+                <div style="font-size:0.75rem; color:var(--text-secondary); margin-top:2px;">1/3rd Rajya Sabha &amp; Vidhan Parishad seats</div>
+            </div>
+            <div style="background:var(--bg-light); border-left:4px solid #6b7280; border-radius:var(--radius-md); padding:12px 14px;">
+                <div style="font-size:0.75rem; font-weight:700; text-transform:uppercase; color:var(--text-muted); letter-spacing:0.4px;">Casual Vacancies / Bye-Polls</div>
+                <div style="font-size:1.35rem; font-weight:800; color:var(--navy-main); margin-top:2px;">6 Months Rule</div>
+                <div style="font-size:0.75rem; color:var(--text-secondary); margin-top:2px;">Sec 151A, RPA 1951 statutory mandate</div>
+            </div>
+        </div>
+
+        <!-- Section Subsection: 2027 Assembly Elections Table -->
+        <div style="margin-bottom:28px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
+                <h3 style="font-size:1.05rem; font-weight:700; color:var(--navy-main); margin:0; display:flex; align-items:center; gap:8px;">
+                    <i class="fas fa-landmark-flag" style="color:var(--saffron-main);"></i> Next Major State Legislative Assembly General Elections (2027 Cycle)
+                </h3>
+                <span style="font-size:0.8rem; color:var(--text-muted);">
+                    Governed under Article 172(1) of the Constitution of India (5-year statutory term)
+                </span>
+            </div>
+
+            <div class="table-container" style="border:1px solid var(--border-color); border-radius:var(--radius-md); overflow-x:auto;">
+                <table class="data-table" style="margin:0;">
+                    <thead>
+                        <tr>
+                            <th style="min-width:180px;">State / Legislative Assembly</th>
+                            <th style="text-align:center; min-width:110px;">Total Seats</th>
+                            <th style="min-width:150px;">Current Term</th>
+                            <th style="min-width:160px;">Term Expiration Date</th>
+                            <th style="min-width:140px;">Expected Schedule</th>
+                            <th style="min-width:160px; text-align:right;">Official State CEO Portal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <strong style="color:var(--navy-main); font-size:0.95rem;">Uttar Pradesh</strong>
+                                <div style="font-size:0.75rem; color:var(--text-muted);">Vidhan Sabha (18th Assembly)</div>
+                            </td>
+                            <td style="text-align:center;">
+                                <span class="badge-tag badge-elected" style="font-size:0.85rem; font-weight:700;">403 Seats</span>
+                            </td>
+                            <td><span style="font-size:0.85rem; color:var(--text-secondary);">23 May 2022 &ndash; 2027</span></td>
+                            <td>
+                                <strong style="color:#b91c1c; font-size:0.88rem;"><i class="far fa-calendar-alt"></i> 22 May 2027</strong>
+                            </td>
+                            <td>
+                                <span class="badge-tag badge-verified" style="font-size:0.75rem;">Feb &ndash; Mar 2027</span>
+                            </td>
+                            <td style="text-align:right;">
+                                <a href="https://ceouttarpradesh.nic.in/" target="_blank" rel="noopener" class="btn-profile-view" style="font-size:0.75rem; padding:4px 8px;">
+                                    CEO Uttar Pradesh <i class="fas fa-external-link-alt" style="font-size:0.65rem;"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <strong style="color:var(--navy-main); font-size:0.95rem;">Punjab</strong>
+                                <div style="font-size:0.75rem; color:var(--text-muted);">Vidhan Sabha (16th Assembly)</div>
+                            </td>
+                            <td style="text-align:center;">
+                                <span class="badge-tag badge-elected" style="font-size:0.85rem; font-weight:700;">117 Seats</span>
+                            </td>
+                            <td><span style="font-size:0.85rem; color:var(--text-secondary);">17 Mar 2022 &ndash; 2027</span></td>
+                            <td>
+                                <strong style="color:#b91c1c; font-size:0.88rem;"><i class="far fa-calendar-alt"></i> 16 March 2027</strong>
+                            </td>
+                            <td>
+                                <span class="badge-tag badge-verified" style="font-size:0.75rem;">Feb &ndash; Mar 2027</span>
+                            </td>
+                            <td style="text-align:right;">
+                                <a href="https://ceopunjab.gov.in/" target="_blank" rel="noopener" class="btn-profile-view" style="font-size:0.75rem; padding:4px 8px;">
+                                    CEO Punjab <i class="fas fa-external-link-alt" style="font-size:0.65rem;"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <strong style="color:var(--navy-main); font-size:0.95rem;">Uttarakhand</strong>
+                                <div style="font-size:0.75rem; color:var(--text-muted);">Vidhan Sabha (5th Assembly)</div>
+                            </td>
+                            <td style="text-align:center;">
+                                <span class="badge-tag badge-elected" style="font-size:0.85rem; font-weight:700;">70 Seats</span>
+                            </td>
+                            <td><span style="font-size:0.85rem; color:var(--text-secondary);">29 Mar 2022 &ndash; 2027</span></td>
+                            <td>
+                                <strong style="color:#b91c1c; font-size:0.88rem;"><i class="far fa-calendar-alt"></i> 28 March 2027</strong>
+                            </td>
+                            <td>
+                                <span class="badge-tag badge-verified" style="font-size:0.75rem;">Feb &ndash; Mar 2027</span>
+                            </td>
+                            <td style="text-align:right;">
+                                <a href="https://ceo.uk.gov.in/" target="_blank" rel="noopener" class="btn-profile-view" style="font-size:0.75rem; padding:4px 8px;">
+                                    CEO Uttarakhand <i class="fas fa-external-link-alt" style="font-size:0.65rem;"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <strong style="color:var(--navy-main); font-size:0.95rem;">Goa</strong>
+                                <div style="font-size:0.75rem; color:var(--text-muted);">Legislative Assembly (8th Assembly)</div>
+                            </td>
+                            <td style="text-align:center;">
+                                <span class="badge-tag badge-elected" style="font-size:0.85rem; font-weight:700;">40 Seats</span>
+                            </td>
+                            <td><span style="font-size:0.85rem; color:var(--text-secondary);">15 Mar 2022 &ndash; 2027</span></td>
+                            <td>
+                                <strong style="color:#b91c1c; font-size:0.88rem;"><i class="far fa-calendar-alt"></i> 14 March 2027</strong>
+                            </td>
+                            <td>
+                                <span class="badge-tag badge-verified" style="font-size:0.75rem;">Feb &ndash; Mar 2027</span>
+                            </td>
+                            <td style="text-align:right;">
+                                <a href="https://ceogoa.nic.in/" target="_blank" rel="noopener" class="btn-profile-view" style="font-size:0.75rem; padding:4px 8px;">
+                                    CEO Goa <i class="fas fa-external-link-alt" style="font-size:0.65rem;"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <strong style="color:var(--navy-main); font-size:0.95rem;">Manipur</strong>
+                                <div style="font-size:0.75rem; color:var(--text-muted);">Legislative Assembly (12th Assembly)</div>
+                            </td>
+                            <td style="text-align:center;">
+                                <span class="badge-tag badge-elected" style="font-size:0.85rem; font-weight:700;">60 Seats</span>
+                            </td>
+                            <td><span style="font-size:0.85rem; color:var(--text-secondary);">14 Mar 2022 &ndash; 2027</span></td>
+                            <td>
+                                <strong style="color:#b91c1c; font-size:0.88rem;"><i class="far fa-calendar-alt"></i> 13 March 2027</strong>
+                            </td>
+                            <td>
+                                <span class="badge-tag badge-verified" style="font-size:0.75rem;">Feb &ndash; Mar 2027</span>
+                            </td>
+                            <td style="text-align:right;">
+                                <a href="https://ceomanipur.nic.in/" target="_blank" rel="noopener" class="btn-profile-view" style="font-size:0.75rem; padding:4px 8px;">
+                                    CEO Manipur <i class="fas fa-external-link-alt" style="font-size:0.65rem;"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <strong style="color:var(--navy-main); font-size:0.95rem;">Gujarat</strong>
+                                <div style="font-size:0.75rem; color:var(--text-muted);">Vidhan Sabha (15th Assembly)</div>
+                            </td>
+                            <td style="text-align:center;">
+                                <span class="badge-tag badge-elected" style="font-size:0.85rem; font-weight:700;">182 Seats</span>
+                            </td>
+                            <td><span style="font-size:0.85rem; color:var(--text-secondary);">20 Dec 2022 &ndash; 2027</span></td>
+                            <td>
+                                <strong style="color:#b91c1c; font-size:0.88rem;"><i class="far fa-calendar-alt"></i> 19 December 2027</strong>
+                            </td>
+                            <td>
+                                <span class="badge-tag badge-verified" style="font-size:0.75rem;">Nov &ndash; Dec 2027</span>
+                            </td>
+                            <td style="text-align:right;">
+                                <a href="https://ceo.gujarat.gov.in/" target="_blank" rel="noopener" class="btn-profile-view" style="font-size:0.75rem; padding:4px 8px;">
+                                    CEO Gujarat <i class="fas fa-external-link-alt" style="font-size:0.65rem;"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <strong style="color:var(--navy-main); font-size:0.95rem;">Himachal Pradesh</strong>
+                                <div style="font-size:0.75rem; color:var(--text-muted);">Vidhan Sabha (14th Assembly)</div>
+                            </td>
+                            <td style="text-align:center;">
+                                <span class="badge-tag badge-elected" style="font-size:0.85rem; font-weight:700;">68 Seats</span>
+                            </td>
+                            <td><span style="font-size:0.85rem; color:var(--text-secondary);">04 Jan 2023 &ndash; 2028</span></td>
+                            <td>
+                                <strong style="color:#b91c1c; font-size:0.88rem;"><i class="far fa-calendar-alt"></i> 03 January 2028</strong>
+                            </td>
+                            <td>
+                                <span class="badge-tag badge-verified" style="font-size:0.75rem;">Nov &ndash; Dec 2027</span>
+                            </td>
+                            <td style="text-align:right;">
+                                <a href="https://ceohimachal.nic.in/" target="_blank" rel="noopener" class="btn-profile-view" style="font-size:0.75rem; padding:4px 8px;">
+                                    CEO Himachal <i class="fas fa-external-link-alt" style="font-size:0.65rem;"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 4-Pillar Grid: Presidential, Rajya Sabha, MLC Biennial, Bye-Elections -->
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:18px; margin-bottom:26px;">
+            <!-- Pillar 1: Presidential & VP Polls -->
+            <div style="background:#FBFBFC; border:1px solid var(--border-color); border-top:3px solid var(--saffron-main); border-radius:var(--radius-md); padding:18px; display:flex; flex-direction:column;">
+                <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+                    <div style="width:36px; height:36px; border-radius:50%; background:var(--saffron-light); color:var(--saffron-dark); display:flex; align-items:center; justify-content:center; font-size:1rem;">
+                        <i class="fas fa-award"></i>
+                    </div>
+                    <div>
+                        <h4 style="font-size:0.98rem; font-weight:700; color:var(--navy-main); margin:0;">Presidential &amp; VP Elections</h4>
+                        <span style="font-size:0.72rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">Constitution of India &bull; Arts. 54, 55, 66</span>
+                    </div>
+                </div>
+                <p style="font-size:0.83rem; color:var(--text-secondary); line-height:1.55; margin-bottom:12px; flex:1;">
+                    The 5-year constitutional term of the President of India expires in <strong>July 2027</strong> and the Vice-President of India in <strong>August 2027</strong>. Elected by an Electoral College consisting of elected members of both Houses of Parliament and elected MLAs of all States/UTs.
+                </p>
+                <div style="background:#FFFFFF; border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:8px 10px; font-size:0.75rem; color:var(--navy-main);">
+                    <strong>System:</strong> Proportional Representation by Single Transferable Vote (Secret Ballot)
+                </div>
+            </div>
+
+            <!-- Pillar 2: Rajya Sabha Biennial Cycles -->
+            <div style="background:#FBFBFC; border:1px solid var(--border-color); border-top:3px solid var(--navy-accent); border-radius:var(--radius-md); padding:18px; display:flex; flex-direction:column;">
+                <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+                    <div style="width:36px; height:36px; border-radius:50%; background:var(--navy-light); color:var(--navy-accent); display:flex; align-items:center; justify-content:center; font-size:1rem;">
+                        <i class="fas fa-landmark"></i>
+                    </div>
+                    <div>
+                        <h4 style="font-size:0.98rem; font-weight:700; color:var(--navy-main); margin:0;">Rajya Sabha Biennial Cycles</h4>
+                        <span style="font-size:0.72rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">Council of States &bull; Art. 83(1)</span>
+                    </div>
+                </div>
+                <p style="font-size:0.83rem; color:var(--text-secondary); line-height:1.55; margin-bottom:12px; flex:1;">
+                    The Rajya Sabha is a permanent House not subject to dissolution. <strong>One-third of its members retire every second year</strong>. Vacancies are filled through biennial elections conducted by the ECI where State MLAs vote via STV, plus Presidential nominations under Art. 80.
+                </p>
+                <div style="background:#FFFFFF; border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:8px 10px; font-size:0.75rem; color:var(--navy-main);">
+                    <strong>Tenure:</strong> 6 Years &bull; Total Sanctioned: 245 Members (233 Elected + 12 Nominated)
+                </div>
+            </div>
+
+            <!-- Pillar 3: Legislative Council (Vidhan Parishad) -->
+            <div style="background:#FBFBFC; border:1px solid var(--border-color); border-top:3px solid var(--green-main); border-radius:var(--radius-md); padding:18px; display:flex; flex-direction:column;">
+                <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+                    <div style="width:36px; height:36px; border-radius:50%; background:var(--green-light); color:var(--green-main); display:flex; align-items:center; justify-content:center; font-size:1rem;">
+                        <i class="fas fa-building-columns"></i>
+                    </div>
+                    <div>
+                        <h4 style="font-size:0.98rem; font-weight:700; color:var(--navy-main); margin:0;">Vidhan Parishad Biennial Elections</h4>
+                        <span style="font-size:0.72rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">6 Bicameral States &bull; Art. 171</span>
+                    </div>
+                </div>
+                <p style="font-size:0.83rem; color:var(--text-secondary); line-height:1.55; margin-bottom:12px; flex:1;">
+                    Upper House MLC elections occur biennially across Uttar Pradesh (100), Bihar (75), Maharashtra (78), Karnataka (75), Andhra Pradesh (58), and Telangana (40). Constituencies comprise Graduates, Teachers, Local Authorities, and Legislative Assembly quotas.
+                </p>
+                <div style="background:#FFFFFF; border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:8px 10px; font-size:0.75rem; color:var(--navy-main);">
+                    <strong>Explore:</strong> See the <a href="#mlc-directory" style="color:var(--green-dark); font-weight:700; text-decoration:none;">MLC Directory below</a> for sitting member records
+                </div>
+            </div>
+
+            <!-- Pillar 4: Bye-Elections / Casual Vacancies -->
+            <div style="background:#FBFBFC; border:1px solid var(--border-color); border-top:3px solid #6b7280; border-radius:var(--radius-md); padding:18px; display:flex; flex-direction:column;">
+                <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+                    <div style="width:36px; height:36px; border-radius:50%; background:var(--bg-light); color:#374151; display:flex; align-items:center; justify-content:center; font-size:1rem;">
+                        <i class="fas fa-person-booth"></i>
+                    </div>
+                    <div>
+                        <h4 style="font-size:0.98rem; font-weight:700; color:var(--navy-main); margin:0;">Statutory Bye-Elections</h4>
+                        <span style="font-size:0.72rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">RPA 1951 &bull; Section 151A</span>
+                    </div>
+                </div>
+                <p style="font-size:0.83rem; color:var(--text-secondary); line-height:1.55; margin-bottom:12px; flex:1;">
+                    Under <strong>Section 151A of the Representation of the People Act, 1951</strong>, bye-elections for any casual vacancy in Parliament or State Assemblies must be held within <strong>six months</strong> of the occurrence of the vacancy, except when the remaining term is less than 1 year.
+                </p>
+                <div style="background:#FFFFFF; border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:8px 10px; font-size:0.75rem; color:var(--navy-main);">
+                    <strong>Status:</strong> ECI notifies bye-elections periodically via official Gazette notifications.
+                </div>
+            </div>
+        </div>
+
+        <!-- Official ECI Digital Citizen Services & Integrity Tools -->
+        <div style="background:linear-gradient(135deg, #f8fafc 0%, #edf2f7 100%); border:1px solid var(--border-color); border-radius:var(--radius-md); padding:18px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:14px;">
+                <div>
+                    <h4 style="font-size:0.96rem; font-weight:700; color:var(--navy-main); margin:0; display:flex; align-items:center; gap:6px;">
+                        <i class="fas fa-shield-halved" style="color:var(--navy-accent);"></i> Official ECI Election Tools &amp; Citizen Voter Services
+                    </h4>
+                    <span style="font-size:0.78rem; color:var(--text-muted);">Empowering voters with transparent affidavits, fast grievance redressal, and seamless digital registration</span>
+                </div>
+                <span class="badge-tag badge-verified" style="font-size:0.75rem;"><i class="fas fa-lock"></i> Official Government Gateways</span>
+            </div>
+
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:12px;">
+                <a href="https://cvigil.eci.gov.in/" target="_blank" rel="noopener" style="background:#FFFFFF; border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:12px; text-decoration:none; display:flex; align-items:flex-start; gap:10px; transition:transform 0.15s, box-shadow 0.15s;" onmouseover="this.style.boxShadow='var(--shadow-md)'; this.style.transform='translateY(-2px)'" onmouseout="this.style.boxShadow='none'; this.style.transform='translateY(0)'">
+                    <div style="width:32px; height:32px; border-radius:50%; background:var(--saffron-light); color:var(--saffron-dark); display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+                        <i class="fas fa-camera"></i>
+                    </div>
+                    <div>
+                        <strong style="color:var(--navy-main); font-size:0.86rem; display:block;">cVIGIL Citizen App</strong>
+                        <span style="font-size:0.75rem; color:var(--text-secondary); line-height:1.4; display:block; margin-top:2px;">Report MCC violations in real time with 100-min response guarantee.</span>
+                    </div>
+                </a>
+
+                <a href="https://affidavit.eci.gov.in/" target="_blank" rel="noopener" style="background:#FFFFFF; border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:12px; text-decoration:none; display:flex; align-items:flex-start; gap:10px; transition:transform 0.15s, box-shadow 0.15s;" onmouseover="this.style.boxShadow='var(--shadow-md)'; this.style.transform='translateY(-2px)'" onmouseout="this.style.boxShadow='none'; this.style.transform='translateY(0)'">
+                    <div style="width:32px; height:32px; border-radius:50%; background:var(--navy-light); color:var(--navy-accent); display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+                        <i class="fas fa-file-invoice"></i>
+                    </div>
+                    <div>
+                        <strong style="color:var(--navy-main); font-size:0.86rem; display:block;">KYC &bull; Candidate Affidavits</strong>
+                        <span style="font-size:0.75rem; color:var(--text-secondary); line-height:1.4; display:block; margin-top:2px;">Inspect criminal antecedents, assets &amp; educational affidavits of candidates.</span>
+                    </div>
+                </a>
+
+                <a href="https://suvidha.eci.gov.in/" target="_blank" rel="noopener" style="background:#FFFFFF; border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:12px; text-decoration:none; display:flex; align-items:flex-start; gap:10px; transition:transform 0.15s, box-shadow 0.15s;" onmouseover="this.style.boxShadow='var(--shadow-md)'; this.style.transform='translateY(-2px)'" onmouseout="this.style.boxShadow='none'; this.style.transform='translateY(0)'">
+                    <div style="width:32px; height:32px; border-radius:50%; background:var(--green-light); color:var(--green-main); display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+                        <i class="fas fa-handshake"></i>
+                    </div>
+                    <div>
+                        <strong style="color:var(--navy-main); font-size:0.86rem; display:block;">Suvidha Candidate Portal</strong>
+                        <span style="font-size:0.75rem; color:var(--text-secondary); line-height:1.4; display:block; margin-top:2px;">Online candidate nomination, permissions &amp; rally clearances single-window.</span>
+                    </div>
+                </a>
+
+                <a href="https://voters.eci.gov.in/" target="_blank" rel="noopener" style="background:#FFFFFF; border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:12px; text-decoration:none; display:flex; align-items:flex-start; gap:10px; transition:transform 0.15s, box-shadow 0.15s;" onmouseover="this.style.boxShadow='var(--shadow-md)'; this.style.transform='translateY(-2px)'" onmouseout="this.style.boxShadow='none'; this.style.transform='translateY(0)'">
+                    <div style="width:32px; height:32px; border-radius:50%; background:var(--navy-light); color:var(--navy-accent); display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+                        <i class="fas fa-id-card"></i>
+                    </div>
+                    <div>
+                        <strong style="color:var(--navy-main); font-size:0.86rem; display:block;">ECI Voters Portal &bull; Form 6</strong>
+                        <span style="font-size:0.75rem; color:var(--text-secondary); line-height:1.4; display:block; margin-top:2px;">Register as a new voter, correct entries, or transfer polling station online.</span>
+                    </div>
+                </a>
+            </div>
+
+            <!-- 4 Statutory Qualifying Dates Strip -->
+            <div style="margin-top:14px; padding:10px 14px; background:#FFFFFF; border-radius:var(--radius-sm); border:1px solid var(--border-color); display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;">
+                <div style="font-size:0.82rem; color:var(--navy-main); display:flex; align-items:center; gap:8px;">
+                    <i class="fas fa-bell" style="color:var(--saffron-main);"></i>
+                    <span><strong>4 Statutory Voter Qualifying Dates:</strong> Youth turning 18 can enroll on <strong>1st January, 1st April, 1st July, or 1st October</strong> of every year.</span>
+                </div>
+                <a href="https://voters.eci.gov.in/" target="_blank" rel="noopener" class="btn-green-tiranga" style="font-size:0.75rem; padding:4px 10px; text-decoration:none;">
+                    Enroll via Form 6 <i class="fas fa-arrow-right" style="font-size:0.7rem;"></i>
                 </a>
             </div>
         </div>

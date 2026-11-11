@@ -19,8 +19,8 @@ function localneta_app_version(bool $reload = false): array {
 
     $defaults = [
         'name' => 'LocalNeta',
-        'version' => '1.2.2',
-        'codename' => 'Tiranga Civic & PPMS',
+        'version' => '1.2.3',
+        'codename' => 'Tiranga Civic & ECI Calendar',
         'released_at' => '2026-11-11',
         'repository' => defined('LOCALNETA_GITHUB_REPO')
             ? (string)LOCALNETA_GITHUB_REPO

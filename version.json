@@ -1,13 +1,14 @@
 {
   "name": "LocalNeta",
-  "version": "1.2.2",
-  "codename": "Tiranga Civic & PPMS",
+  "version": "1.2.3",
+  "codename": "Tiranga Civic & ECI Calendar",
   "released_at": "2026-11-11",
   "repository": "https://github.com/kgauravindia/localneta.git",
   "branch": "main",
   "highlights": [
+    "Upcoming Elections in India official calendar from Election Commission of India (eci.gov.in) with 2027 Vidhan Sabha cycles, Presidential polls, and statutory bye-election rules",
     "Clean & short website navigation menu and responsive Pan-India Civic Hero homepage",
-    "Streamlined PPMS GitHub Updates console removing unnecessary diagnostic clutter",
-    "Official political party contact & social channels plus dual-engine GitHub sync (v1.2.1)"
+    "Streamlined PPMS GitHub Updates console with zero diagnostic clutter",
+    "Official political party contacts & social channels plus dual-engine GitHub sync"
   ]
 }
