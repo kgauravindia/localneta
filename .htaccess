@@ -3,7 +3,7 @@
     RewriteEngine On
 
     # Block direct web access to Git metadata, CLI router, private config/data directories & sensitive extensions
-    RewriteRule ^(?:router(?:\.php)?|(?:ppms/)?includes(?:/.*)?|data(?:/.*)?|logs(?:/.*)?|backups(?:/.*)?|dumps(?:/.*)?|\.git(?:/.*)?|\.gitignore|\.gitattributes|\.env(?:\..*)?|version\.json)$ - [F,L,NC]
+    RewriteRule ^(?:router(?:\.php)?|(?:ppms/)?includes(?:/.*)?|data(?:/.*)?|logs(?:/.*)?|tmp(?:/.*)?|cache(?:/.*)?|backups(?:/.*)?|dumps(?:/.*)?|\.git(?:/.*)?|\.gitignore|\.gitattributes|\.env(?:\..*)?|version\.json)$ - [F,L,NC]
     RewriteRule \.(?:sql|sql\.gz|sql\.bz2|sql\.xz|sql\.zip|sqlite|sqlite3|db|dump|bak|log|env|xls|xlsx)$ - [F,L,NC]
 
     # External GET-only 301 redirect from *.php to extensionless URLs (index.php -> index, all pages)

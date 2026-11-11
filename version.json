@@ -1,6 +1,6 @@
 {
   "name": "LocalNeta",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "codename": "Tiranga Civic & PPMS",
   "released_at": "2026-11-11",
   "repository": "https://github.com/kgauravindia/localneta.git",
@@ -8,7 +8,6 @@
   "highlights": [
     "PPMS Admin Portal with Political Parties, MPs, MLCs, Villages and XML Sitemaps management",
     "Official political party contact and social channels (Mobile, WhatsApp, Missed Call, Email, Facebook, Instagram, X, YouTube, LinkedIn)",
-    "GitHub Version Control and PPMS Superadmin Update Manager with secret and SQL dump exclusions"
+    "Dual-engine GitHub Version Control and PPMS Update Manager (Git CLI + Shared-Hosting HTTPS/ZipArchive Sync)"
   ]
 }
-

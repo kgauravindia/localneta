@@ -6,7 +6,7 @@ $method = strtoupper($_SERVER['REQUEST_METHOD'] ?? 'GET');
 $docRoot = __DIR__;
 
 // Disallow web access to Git metadata, router.php, includes/, data/, logs/, config & SQL/archive extensions
-if (preg_match('#^/(?:router(?:\.php)?|(?:ppms/)?includes(?:/.*)?|data(?:/.*)?|logs(?:/.*)?|backups(?:/.*)?|dumps(?:/.*)?|\.git(?:/.*)?|\.gitignore|\.gitattributes|\.env(?:\..*)?|version\.json)$#i', $uriPath)
+if (preg_match('#^/(?:router(?:\.php)?|(?:ppms/)?includes(?:/.*)?|data(?:/.*)?|logs(?:/.*)?|tmp(?:/.*)?|cache(?:/.*)?|backups(?:/.*)?|dumps(?:/.*)?|\.git(?:/.*)?|\.gitignore|\.gitattributes|\.env(?:\..*)?|version\.json)$#i', $uriPath)
     || preg_match('#\.(?:sql|sql\.gz|sql\.bz2|sql\.xz|sql\.zip|sqlite|sqlite3|db|dump|bak|log|env|xls|xlsx)$#i', $uriPath)) {
     http_response_code(403);
     exit('Forbidden');
