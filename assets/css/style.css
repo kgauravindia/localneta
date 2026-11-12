@@ -863,6 +863,15 @@ a {
   color: #FFFFFF;
 }
 
+.btn-profile-view.active,
+.template-chip.active,
+.ratio-btn.active {
+  background: var(--navy-main) !important;
+  color: #FFFFFF !important;
+  border-color: var(--navy-main) !important;
+  box-shadow: var(--shadow-sm);
+}
+
 .btn-whatsapp-quick {
   width: 36px;
   height: 36px;

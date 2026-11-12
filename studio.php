@@ -19,6 +19,8 @@ $defaultName = '';
 $defaultPost = '';
 $defaultArea = '';
 $defaultPhone = '';
+$defaultPhotoUrl = '';
+$leaderPhotoUrl = '';
 $mpProfileUrl = '';
 $mlcProfileUrl = '';
 
@@ -29,6 +31,9 @@ if ($mukhiyaId > 0 && $pdo->query("SHOW TABLES LIKE 'mukhiya'")->fetch()) {
         $defaultName = format_civic_title($mk['name']);
         $defaultPost = 'Mukhiya (Gram Panchayat Head)';
         $defaultArea = 'Gram Panchayat ' . format_civic_title($mk['panchayat_name']) . ', ' . format_civic_title($mk['block_name']) . ' (' . format_civic_title($mk['district_name']) . ')';
+        if (!empty($mk['photo'])) {
+            $leaderPhotoUrl = get_site_url((string)$mk['photo']);
+        }
     }
 } elseif ($politicianId > 0 && $pdo->query("SHOW TABLES LIKE 'politician'")->fetch()) {
     $stmt = $pdo->prepare("SELECT * FROM politician WHERE id = ?");
@@ -40,6 +45,9 @@ if ($mukhiyaId > 0 && $pdo->query("SHOW TABLES LIKE 'mukhiya'")->fetch()) {
             ? 'Member of Legislative Council (MLC)'
             : ($polType === 'MPLS' ? 'MP (Lok Sabha)' : ($polType === 'MPRS' ? 'MP (Rajya Sabha)' : 'Member of Legislative Assembly (MLA)'));
         $defaultArea = format_civic_title($pol['c_name']) . (!empty($pol['political_party']) ? ' • ' . trim((string)$pol['political_party']) : '');
+        if (!empty($pol['photo'])) {
+            $leaderPhotoUrl = get_site_url((string)$pol['photo']);
+        }
     }
 } elseif ($mlcId > 0 && $pdo->query("SHOW TABLES LIKE 'mlc'")->fetch()) {
     $stmt = $pdo->prepare("SELECT * FROM mlc WHERE id = ?");
@@ -53,6 +61,9 @@ if ($mukhiyaId > 0 && $pdo->query("SHOW TABLES LIKE 'mukhiya'")->fetch()) {
         $partyText = trim((string)($mlcRow['party_name'] ?? ''));
         $defaultArea = trim($seatText . ($stateText !== '' ? ', ' . $stateText : '') . ($partyText !== '' ? ' • ' . $partyText : ''), ' •,');
         $mlcProfileUrl = get_mlc_page_url((string)($mlcRow['slug'] ?? ''), (int)$mlcRow['id']);
+        if (!empty($mlcRow['photo_url'])) {
+            $leaderPhotoUrl = (string)$mlcRow['photo_url'];
+        }
     }
 } elseif ($mpId > 0) {
     $stmt = $pdo->prepare("SELECT * FROM mp WHERE id = ?");
@@ -62,6 +73,9 @@ if ($mukhiyaId > 0 && $pdo->query("SHOW TABLES LIKE 'mukhiya'")->fetch()) {
         $defaultPost = $mpRow['type'] === 'rs' ? 'Member of Parliament (Rajya Sabha)' : 'Member of Parliament (Lok Sabha)';
         $defaultArea = trim((string)$mpRow['constituency']) . (!empty($mpRow['state']) ? ', ' . trim((string)$mpRow['state']) : '');
         $mpProfileUrl = get_mp_page_url((string)($mpRow['slug'] ?? ''), (int)$mpRow['id']);
+        if (!empty($mpRow['photo_url'])) {
+            $leaderPhotoUrl = (string)$mpRow['photo_url'];
+        }
     }
 } elseif ($leaderId > 0) {
     $stmt = $pdo->prepare("SELECT * FROM leaders WHERE id = ?");
@@ -90,6 +104,22 @@ if ($defaultName === '' && $currentUser) {
         ], static fn($v): bool => $v !== '');
         $defaultArea = implode(', ', $areaParts);
     }
+}
+
+// User photo resolution: Leader Photo -> Logged-in User Profile Photo -> Dummy User Placeholder
+$userProfilePhotoUrl = '';
+if ($currentUser && !empty($currentUser['profile_photo'])) {
+    $userProfilePhotoUrl = function_exists('get_user_avatar_url')
+        ? get_user_avatar_url((string)$currentUser['profile_photo'])
+        : get_site_url(ltrim((string)$currentUser['profile_photo'], '/'));
+}
+
+if ($leaderPhotoUrl !== '') {
+    $defaultPhotoUrl = $leaderPhotoUrl;
+} elseif ($userProfilePhotoUrl !== '') {
+    $defaultPhotoUrl = $userProfilePhotoUrl;
+} else {
+    $defaultPhotoUrl = get_site_url('assets/images/dummy-user.png') . '?v=' . (@filemtime(__DIR__ . '/assets/images/dummy-user.png') ?: 1);
 }
 
 $previewName = $defaultName !== '' ? $defaultName : '[Representative Name]';
@@ -129,7 +159,7 @@ require_once __DIR__ . '/includes/header.php';
         <!-- COLUMN 1: LIVE CANVAS PREVIEW & DOWNLOAD ACTIONS -->
         <div style="display:flex; flex-direction:column; gap:16px;">
             <div class="canvas-preview-container">
-                <canvas id="posterCanvas" width="1080" height="1080" data-dummy-photo="<?= get_site_url('assets/images/dummy-user.png') ?>?v=<?= @filemtime(__DIR__ . '/assets/images/dummy-user.png') ?: 1 ?>"></canvas>
+                <canvas id="posterCanvas" width="1080" height="1080" data-default-photo="<?= e($defaultPhotoUrl) ?>" data-dummy-photo="<?= get_site_url('assets/images/dummy-user.png') ?>?v=<?= @filemtime(__DIR__ . '/assets/images/dummy-user.png') ?: 1 ?>"></canvas>
             </div>
 
             <!-- Export Buttons -->
@@ -162,45 +192,66 @@ require_once __DIR__ . '/includes/header.php';
                 </div>
             </div>
 
-            <!-- 2. Template Selector -->
+            <!-- 2. Template Selector (4 Days of Chhath Puja & Celebrations) -->
             <div>
-                <label class="form-label" style="font-weight:700;">2. Select Occasion Template</label>
-                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:8px;">
-                    <button type="button" class="template-chip active btn-profile-view" id="tpl-chhath" onclick="setTemplate('chhath')" style="font-size:0.8rem; padding:8px 6px;">
-                        🌅 Chhath Puja
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                    <label class="form-label" style="font-weight:700; margin:0;">2. Select Occasion Template</label>
+                    <span style="font-size:0.75rem; color:var(--saffron-dark); font-weight:700;"><i class="fas fa-sun"></i> छठ महापर्व विशेष</span>
+                </div>
+
+                <!-- 4 Days of Chhath Puja Highlight Bar -->
+                <div style="display:grid; grid-template-columns:repeat(2, 1fr); gap:8px; margin-bottom:10px; background:linear-gradient(135deg, rgba(255,103,31,0.08) 0%, rgba(220,38,38,0.06) 100%); padding:10px; border-radius:var(--radius-md); border:1px solid rgba(255,103,31,0.25);">
+                    <button type="button" class="template-chip active btn-profile-view" id="tpl-chhath-nahay-khaye" onclick="setTemplate('chhath-nahay-khaye')" style="font-size:0.82rem; padding:8px 8px; text-align:left; font-weight:700;">
+                        🌅 1. नहाय-खाय (Day 1)
                     </button>
-                    <button type="button" class="template-chip btn-profile-view" id="tpl-diwali" onclick="setTemplate('diwali')" style="font-size:0.8rem; padding:8px 6px;">
+                    <button type="button" class="template-chip btn-profile-view" id="tpl-chhath-kharna" onclick="setTemplate('chhath-kharna')" style="font-size:0.82rem; padding:8px 8px; text-align:left; font-weight:700;">
+                        🥣 2. खरना (Day 2)
+                    </button>
+                    <button type="button" class="template-chip btn-profile-view" id="tpl-chhath-pahla-arg" onclick="setTemplate('chhath-pahla-arg')" style="font-size:0.82rem; padding:8px 8px; text-align:left; font-weight:700;">
+                        🌇 3. पहला अर्घ्य (Day 3)
+                    </button>
+                    <button type="button" class="template-chip btn-profile-view" id="tpl-chhath-dusra-arg" onclick="setTemplate('chhath-dusra-arg')" style="font-size:0.82rem; padding:8px 8px; text-align:left; font-weight:700;">
+                        🌅 4. दूसरा अर्घ्य (Day 4)
+                    </button>
+                </div>
+
+                <!-- Other Occasion Templates -->
+                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(110px, 1fr)); gap:6px;">
+                    <button type="button" class="template-chip btn-profile-view" id="tpl-chhath" onclick="setTemplate('chhath')" style="font-size:0.75rem; padding:6px 6px;">
+                        ☀️ छठ महापर्व
+                    </button>
+                    <button type="button" class="template-chip btn-profile-view" id="tpl-diwali" onclick="setTemplate('diwali')" style="font-size:0.75rem; padding:6px 6px;">
                         🪔 Deepawali
                     </button>
-                    <button type="button" class="template-chip btn-profile-view" id="tpl-national" onclick="setTemplate('national')" style="font-size:0.8rem; padding:8px 6px;">
+                    <button type="button" class="template-chip btn-profile-view" id="tpl-national" onclick="setTemplate('national')" style="font-size:0.75rem; padding:6px 6px;">
                         🇮🇳 National Day
                     </button>
-                    <button type="button" class="template-chip btn-profile-view" id="tpl-holi" onclick="setTemplate('holi')" style="font-size:0.8rem; padding:8px 6px;">
+                    <button type="button" class="template-chip btn-profile-view" id="tpl-holi" onclick="setTemplate('holi')" style="font-size:0.75rem; padding:6px 6px;">
                         🎨 Holi
                     </button>
-                    <button type="button" class="template-chip btn-profile-view" id="tpl-vikas" onclick="setTemplate('vikas')" style="font-size:0.8rem; padding:8px 6px;">
+                    <button type="button" class="template-chip btn-profile-view" id="tpl-vikas" onclick="setTemplate('vikas')" style="font-size:0.75rem; padding:6px 6px;">
                         🏗️ Vikas Launch
                     </button>
-                    <button type="button" class="template-chip btn-profile-view" id="tpl-notice" onclick="setTemplate('notice')" style="font-size:0.8rem; padding:8px 6px;">
+                    <button type="button" class="template-chip btn-profile-view" id="tpl-notice" onclick="setTemplate('notice')" style="font-size:0.75rem; padding:6px 6px;">
                         📢 Gram Sabha
                     </button>
                 </div>
             </div>
 
-            <!-- 3. Photo Upload (Dummy User Default) -->
+            <!-- 3. Photo Upload (Auto-loads User Profile Photo by default) -->
             <div>
-                <label class="form-label" style="font-weight:700;"><i class="fas fa-camera" style="color:var(--green-main);"></i> 3. Representative Photo (Dummy User by Default)</label>
+                <label class="form-label" style="font-weight:700;"><i class="fas fa-camera" style="color:var(--green-main);"></i> 3. Representative Photo (Profile Photo by Default)</label>
                 <div style="display:flex; align-items:center; gap:10px;">
                     <img id="studioPhotoThumb"
-                         src="<?= get_site_url('assets/images/dummy-user.png') ?>?v=<?= @filemtime(__DIR__ . '/assets/images/dummy-user.png') ?: 1 ?>"
-                         alt="Dummy User Avatar"
+                         src="<?= e($defaultPhotoUrl) ?>"
+                         alt="Representative Avatar"
                          style="width:44px; height:44px; border-radius:50%; object-fit:cover; border:2px solid var(--border-color); background:#F1F5F9; flex-shrink:0;">
                     <input type="file" id="studioPhotoInput" accept="image/*" class="form-control" onchange="handlePhotoUpload(event)" style="padding:8px; flex:1;">
-                    <button type="button" id="btnResetDummyPhoto" class="btn-profile-view" onclick="resetStudioPhoto()" style="display:none; flex:unset; padding:8px 10px; font-size:0.78rem;" title="Revert to Dummy User">
+                    <button type="button" id="btnResetDummyPhoto" class="btn-profile-view" onclick="resetStudioPhoto()" style="display:none; flex:unset; padding:8px 10px; font-size:0.78rem;" title="Revert to Default Photo">
                         Reset
                     </button>
                 </div>
-                <p style="font-size:0.75rem; color:var(--text-muted); margin-top:4px;">*Uses dummy user placeholder by default. Upload any photo to auto-frame inside the gold &amp; tricolor circular badge.</p>
+                <p style="font-size:0.75rem; color:var(--text-muted); margin-top:4px;">*Auto-loads your profile photo by default. Upload any custom photo to frame inside the gold &amp; tricolor circular badge.</p>
             </div>
 
             <!-- 4. Text Fields -->
@@ -226,8 +277,8 @@ require_once __DIR__ . '/includes/header.php';
             </div>
 
             <div class="form-group" style="margin:0;">
-                <label class="form-label">Custom Slogan / Message</label>
-                <textarea id="posterSlogan" rows="2" class="form-control">लोक आस्था के महापर्व छठ पूजा की आप सभी ग्रामवासियों को अनंत शुभकामनाएँ।</textarea>
+                <label class="form-label">Custom Slogan / Message (Hindi)</label>
+                <textarea id="posterSlogan" rows="2" class="form-control">लोक आस्था के चार दिवसीय महापर्व छठ के पावन प्रथम दिवस 'नहाय-खाय' की समस्त क्षेत्रवासियों को हार्दिक शुभकामनाएँ।</textarea>
             </div>
         </div>
 
@@ -244,11 +295,15 @@ require_once __DIR__ . '/includes/header.php';
         </p>
 
         <div style="display:flex; gap:10px; margin-bottom:16px; flex-wrap:wrap;">
-            <select id="genTopic" class="form-control" style="width:240px;" onchange="generateContent()">
-                <option value="chhath">Chhath Puja Mahaparv</option>
-                <option value="diwali">Shubh Deepawali</option>
-                <option value="vikas">Panchayat Vikas Work Launch</option>
-                <option value="notice">Gram Sabha Meeting Notice</option>
+            <select id="genTopic" class="form-control" style="width:320px;" onchange="generateContent()">
+                <option value="chhath-nahay-khaye">🌅 छठ महापर्व — नहाय-खाय (Day 1)</option>
+                <option value="chhath-kharna">🥣 छठ महापर्व — खरना (Day 2)</option>
+                <option value="chhath-pahla-arg">🌇 छठ महापर्व — पहला अर्घ्य / संध्या अर्घ्य (Day 3)</option>
+                <option value="chhath-dusra-arg">🌅 छठ महापर्व — दूसरा अर्घ्य / उषा अर्घ्य (Day 4)</option>
+                <option value="chhath">☀️ छठ पूजा महापर्व (सामान्य)</option>
+                <option value="diwali">🪔 Shubh Deepawali</option>
+                <option value="vikas">🏗️ Panchayat Vikas Work Launch</option>
+                <option value="notice">📢 Gram Sabha Meeting Notice</option>
             </select>
             <button type="button" class="btn-primary-tiranga" onclick="generateContent()" style="padding:8px 18px;">
                 <i class="fas fa-rotate"></i> Generate Content

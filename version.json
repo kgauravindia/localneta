@@ -1,15 +1,15 @@
 {
   "name": "LocalNeta",
-  "version": "1.2.5",
-  "codename": "Tiranga Civic & DLT SMS",
+  "version": "1.2.6",
+  "codename": "Tiranga Civic & Chhath Studio",
   "released_at": "2026-11-12",
   "repository": "https://github.com/kgauravindia/localneta.git",
   "branch": "main",
   "highlights": [
+    "LocalNeta Studio 4 Days of Chhath Puja poster maker (Nahaye-Khaye, Kharna, Pahla Arg, Dusra Arg in Hindi) with auto user profile photo integration",
     "TRAI DLT-approved OTP SMS integration with sender LONETA, template LONETA_OTP (1277179438546154323) and OfferPlant bulk messaging functions",
     "Google Tag Manager (GTM-M5KJVRZK) & gtag analytics integration in global header",
     "Upcoming Elections in India official calendar from Election Commission of India (eci.gov.in) with 2027 Vidhan Sabha cycles, Presidential polls, and statutory bye-election rules",
-    "Clean & short website navigation menu and responsive Pan-India Civic Hero homepage",
-    "Streamlined PPMS GitHub Updates console with zero diagnostic clutter"
+    "Clean & short website navigation menu and responsive Pan-India Civic Hero homepage"
   ]
 }

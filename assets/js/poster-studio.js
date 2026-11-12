@@ -5,11 +5,40 @@
 let canvas, ctx;
 let userPhotoImg = null;
 let dummyUserImg = null;
+let defaultPhotoUrl = '';
 let dummyUserPhotoUrl = '';
 let currentAspectRatio = '1:1'; // '1:1' or '9:16'
-let currentTemplate = 'chhath';
+let currentTemplate = 'chhath-nahay-khaye';
 
 const TEMPLATE_CONFIGS = {
+    'chhath-nahay-khaye': {
+        title: 'छठ महापर्व • प्रथम दिवस (नहाय-खाय)',
+        headline: 'नहाय-खाय की हार्दिक शुभकामनाएँ',
+        bgColors: ['#FF671F', '#B45309', '#78350F'],
+        accent: '#FDE047',
+        defaultSlogan: "लोक आस्था के चार दिवसीय महापर्व छठ के पावन प्रथम दिवस 'नहाय-खाय' की समस्त क्षेत्रवासियों को हार्दिक शुभकामनाएँ।"
+    },
+    'chhath-kharna': {
+        title: 'छठ महापर्व • द्वितीय दिवस (खरना)',
+        headline: 'खरना की हार्दिक शुभकामनाएँ',
+        bgColors: ['#DC2626', '#991B1B', '#78350F'],
+        accent: '#FEF08A',
+        defaultSlogan: "पवित्रता, त्याग और अखंड आस्था के पावन दिवस 'खरना' की आप सभी को अनंत शुभकामनाएँ। छठी मइया सबका कल्याण करें।"
+    },
+    'chhath-pahla-arg': {
+        title: 'छठ महापर्व • तृतीय दिवस (संध्या अर्घ्य)',
+        headline: 'पहला अर्घ्य (संध्या अर्घ्य) की शुभकामनाएँ',
+        bgColors: ['#EA580C', '#C2410C', '#431407'],
+        accent: '#FBBF24',
+        defaultSlogan: 'अस्ताचलगामी भगवान सूर्य को प्रथम अर्घ्य के पावन अवसर पर समस्त श्रद्धालुओं को हार्दिक बधाई एवं अनंत शुभकामनाएँ।'
+    },
+    'chhath-dusra-arg': {
+        title: 'छठ महापर्व • चतुर्थ दिवस (उषा अर्घ्य)',
+        headline: 'दूसरा अर्घ्य (उषा अर्घ्य) की शुभकामनाएँ',
+        bgColors: ['#F97316', '#D97706', '#92400E'],
+        accent: '#FEF9C3',
+        defaultSlogan: 'उदीयमान भगवान सूर्य को प्रातः अर्घ्य एवं पारण के पावन दिवस पर समस्त व्रतियों एवं क्षेत्रवासियों को सादर नमन एवं शुभकामनाएँ।'
+    },
     'chhath': {
         title: 'Chhath Puja Mahaparv',
         headline: 'छठ महापर्व की हार्दिक शुभकामनाएँ',
@@ -59,14 +88,17 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!canvas) return;
     ctx = canvas.getContext('2d');
 
+    defaultPhotoUrl = canvas.dataset.defaultPhoto || canvas.dataset.dummyPhoto || `${window.LOCALNETA_BASE_URL || ''}/assets/images/dummy-user.png`;
     dummyUserPhotoUrl = canvas.dataset.dummyPhoto || `${window.LOCALNETA_BASE_URL || ''}/assets/images/dummy-user.png`;
-    if (dummyUserPhotoUrl) {
+
+    // Preload user's photo or default avatar as initial poster photo
+    if (defaultPhotoUrl) {
         const defaultImg = new Image();
         defaultImg.onload = () => {
-            dummyUserImg = defaultImg;
+            userPhotoImg = defaultImg;
             renderPoster();
         };
-        defaultImg.src = dummyUserPhotoUrl;
+        defaultImg.src = defaultPhotoUrl;
     }
 
     renderPoster();
@@ -103,10 +135,20 @@ function resetStudioPhoto() {
     const input = document.getElementById('studioPhotoInput');
     if (input) input.value = '';
     const thumb = document.getElementById('studioPhotoThumb');
-    if (thumb && dummyUserPhotoUrl) thumb.src = dummyUserPhotoUrl;
+    if (thumb && defaultPhotoUrl) thumb.src = defaultPhotoUrl;
     const resetBtn = document.getElementById('btnResetDummyPhoto');
     if (resetBtn) resetBtn.style.display = 'none';
-    renderPoster();
+
+    if (defaultPhotoUrl) {
+        const defaultImg = new Image();
+        defaultImg.onload = () => {
+            userPhotoImg = defaultImg;
+            renderPoster();
+        };
+        defaultImg.src = defaultPhotoUrl;
+    } else {
+        renderPoster();
+    }
 }
 
 function setAspectRatio(ratio) {
@@ -126,7 +168,7 @@ function setTemplate(tplKey) {
     const config = TEMPLATE_CONFIGS[tplKey];
     if (config) {
         const sloganInput = document.getElementById('posterSlogan');
-        if (sloganInput && (!sloganInput.value || sloganInput.value.length < 5)) {
+        if (sloganInput) {
             sloganInput.value = config.defaultSlogan;
         }
     }
