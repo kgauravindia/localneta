@@ -252,7 +252,8 @@ function send_user_otp(PDO $pdo, int $userId, string $purpose = 'verification'):
     $upd = $pdo->prepare("UPDATE users SET otp_code = ?, otp_expiry = DATE_ADD(NOW(), INTERVAL 10 MINUTE) WHERE id = ?");
     $upd->execute([$otp, $userId]);
 
-    $smsRes = send_otp_sms((string)$user['mobile'], $otp, $purpose);
+    $userName = trim((string)($user['name'] ?? 'User'));
+    $smsRes = send_otp_sms((string)$user['mobile'], $otp, $purpose, $userName);
     if (is_local_dev_env() && ($smsRes['channel'] ?? '') === 'local_dev') {
         ensure_user_session();
         $_SESSION['local_dev_otp'] = $otp;

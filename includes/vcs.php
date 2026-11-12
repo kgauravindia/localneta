@@ -19,8 +19,8 @@ function localneta_app_version(bool $reload = false): array {
 
     $defaults = [
         'name' => 'LocalNeta',
-        'version' => '1.2.4',
-        'codename' => 'Tiranga Civic & Analytics',
+        'version' => '1.2.5',
+        'codename' => 'Tiranga Civic & DLT SMS',
         'released_at' => '2026-11-12',
         'repository' => defined('LOCALNETA_GITHUB_REPO')
             ? (string)LOCALNETA_GITHUB_REPO

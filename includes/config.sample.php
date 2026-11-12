@@ -22,11 +22,13 @@ if (!defined('DB_PASS')) {
     define('DB_PASS', 'your_mysql_password');
 }
 
-// Optional SMS OTP Gateway Settings (Production)
+// Optional SMS OTP Gateway Settings (Production - TRAI DLT Compliant)
 // if (!defined('LOCALNETA_SEND_LIVE_SMS')) { define('LOCALNETA_SEND_LIVE_SMS', false); }
-// if (!defined('LOCALNETA_SMS_URL')) { define('LOCALNETA_SMS_URL', ''); }
-// if (!defined('LOCALNETA_SMS_AUTH_KEY')) { define('LOCALNETA_SMS_AUTH_KEY', ''); }
-// if (!defined('LOCALNETA_SMS_SENDER_ID')) { define('LOCALNETA_SMS_SENDER_ID', 'LOCNTA'); }
+// if (!defined('SMS_API_URL')) { define('SMS_API_URL', 'http://msg.morg.in/rest/services/sendSMS/sendGroupSms'); }
+// if (!defined('SMS_AUTH_KEY')) { define('SMS_AUTH_KEY', 'your_auth_key_here'); }
+// if (!defined('SMS_SENDER_ID')) { define('SMS_SENDER_ID', 'LONETA'); }
+// if (!defined('SMS_TEMPLATE_NAME')) { define('SMS_TEMPLATE_NAME', 'LONETA_OTP'); }
+// if (!defined('SMS_TEMPLATE_ID')) { define('SMS_TEMPLATE_ID', '1277179438546154323'); }
 
 // GitHub Version Control Settings
 if (!defined('LOCALNETA_GITHUB_REPO')) {
