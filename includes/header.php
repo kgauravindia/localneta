@@ -21,6 +21,15 @@ $currentPage = basename($_SERVER['SCRIPT_NAME'] ?: ($_SERVER['PHP_SELF'] ?? 'ind
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Google Tag Manager -->
+    <script async src="https://www.googletagmanager.com/gtm.js?id=GTM-M5KJVRZK"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+    </script>
+    <!-- End Google Tag Manager -->
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title><?= isset($pageTitle) ? e($pageTitle) . ' | ' : '' ?>LocalNeta — Your Leaders, Your Issues | India</title>
@@ -50,6 +59,9 @@ $currentPage = basename($_SERVER['SCRIPT_NAME'] ?: ($_SERVER['PHP_SELF'] ?? 'ind
     <link rel="stylesheet" href="<?= get_site_url('assets/css/style.css') ?>?v=<?= @filemtime(__DIR__ . '/../assets/css/style.css') ?: 1 ?>">
 </head>
 <body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-M5KJVRZK" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
 
     <!-- 1. Indian Flag / Tiranga Top Ribbon -->
     <div class="tiranga-top-ribbon" title="Nation First • Satyameva Jayate"></div>
